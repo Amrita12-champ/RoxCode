@@ -29,7 +29,6 @@ public class StudentDb {
                 prt.setString(1,a.getName());
                 prt.setString(2,a.getEmail());
                 prt.setString(3, a.getPassword());
-
                 return prt.executeUpdate();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
