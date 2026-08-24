@@ -1,18 +1,9 @@
 package entity;
 
-public class Student {
+public class Admin {
     String name;
     String email;
     String password;
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-
-        this.name = name;
-    }
 
     public String getEmail() {
         return email;
@@ -20,6 +11,14 @@ public class Student {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
@@ -30,20 +29,18 @@ public class Student {
         this.password = password;
     }
 
-    public Student(String name, String email, String password) {
-        this.name = name;
+    public Admin(String email, String name, String password) {
         this.email = email;
+        this.name = name;
         this.password = password;
     }
-
-    public Student() {
-    }
+    public Admin() {}
 
     @Override
     public String toString() {
-        return "Student{" +
-                "fullName='" + name + '\'' +
-                ", email='" + email + '\'' +
+        return "Admin{" +
+                "email='" + email + '\'' +
+                ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }
