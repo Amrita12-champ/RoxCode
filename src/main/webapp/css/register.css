@@ -21,6 +21,7 @@ body {
     border-radius: 50%;
     pointer-events: none;
 }
+
 .bg-shape-1 {
     width: 800px;
     height: 800px;
@@ -28,6 +29,7 @@ body {
     top: -160px;
     left: -220px;
 }
+
 .bg-shape-2 {
     width: 950px;
     height: 950px;
@@ -57,11 +59,13 @@ body {
     padding: 26px 48px 0 48px;
     z-index: 20;
 }
+
 .brand {
     display: flex;
     align-items: center;
     gap: 10px;
 }
+
 .brand-name {
     font-size: 16px;
     font-weight: 700;
@@ -91,6 +95,7 @@ body {
     gap: 32px;
     margin-bottom: 22px;
 }
+
 .tab-btn {
     background: none;
     border: none;
@@ -100,9 +105,11 @@ body {
     position: relative;
     padding-bottom: 6px;
 }
+
 .tab-btn.active {
     color: #38b69b;
 }
+
 .tab-btn.active::after {
     content: '';
     position: absolute;
@@ -113,6 +120,7 @@ body {
     background-color: #38b69b;
     border-radius: 2px;
 }
+
 .tab-btn.inactive {
     color: #cad8d8;
 }
@@ -133,11 +141,13 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.015);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
+
 .pill-input-box:focus-within {
     border-color: #5ec4af;
     background-color: #ffffff;
     box-shadow: 0 4px 10px rgba(56, 182, 155, 0.08);
 }
+
 .icon-bubble {
     width: 22px;
     height: 22px;
@@ -151,7 +161,9 @@ body {
     font-size: 9px;
     flex-shrink: 0;
 }
-.pill-input-box input, .select-box select {
+
+.pill-input-box input,
+.select-box select {
     border: none;
     outline: none;
     background: transparent;
@@ -159,9 +171,11 @@ body {
     color: #4a5a5e;
     width: 100%;
 }
+
 .select-box select {
     cursor: pointer;
 }
+
 .pill-input-box input::placeholder {
     color: #c1d4d2;
 }
@@ -173,18 +187,22 @@ body {
     justify-content: space-between;
     margin-top: 10px;
 }
+
 .login-prompt {
     font-size: 10px;
     color: #778f94;
 }
+
 .login-link {
     color: #38b69b;
     font-weight: 600;
     text-decoration: none;
 }
+
 .login-link:hover {
     text-decoration: underline;
 }
+
 .btn-teal-register {
     background-color: #3bbca0;
     color: #ffffff;
@@ -197,6 +215,7 @@ body {
     box-shadow: 0 4px 10px rgba(59, 188, 160, 0.3);
     transition: background-color 0.2s ease;
 }
+
 .btn-teal-register:hover {
     background-color: #2ea58c;
 }
@@ -215,21 +234,42 @@ body {
     top: 50%;
     transform: translateY(-50%);
 }
+
 .arc-outer {
     width: 500px;
     height: 500px;
     background: #e2f4f0;
     z-index: 1;
 }
+
 .arc-middle {
     width: 410px;
     height: 410px;
     background: #c3eae1;
     z-index: 2;
 }
+
 .arc-inner {
     width: 320px;
     height: 320px;
     background: #88d7c5;
     z-index: 3;
+}
+
+
+/* =========================================
+   FULL NAME VALIDATION
+   ========================================= */
+
+.field-error {
+    display: none;
+    font-size: 10px !important;
+    color: #e57373 !important;
+    margin: -7px 0 8px 12px !important;
+    line-height: 12px;
+}
+
+.pill-input-box.invalid {
+    border-color: #e57373 !important;
+    box-shadow: 0 0 0 1px #e57373 !important;
 }

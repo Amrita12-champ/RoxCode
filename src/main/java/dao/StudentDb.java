@@ -8,7 +8,7 @@ import java.sql.*;
 public class StudentDb {
         private static final String url="jdbc:mysql://localhost:3306/RoxCode";
         private static final String user="root";
-        private static final String pass="Satya@2005";
+        private static final String pass="";
         private Connection con=null;
 
         public void connection(){
