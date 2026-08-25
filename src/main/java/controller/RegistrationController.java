@@ -25,5 +25,6 @@ public class RegistrationController extends HttpServlet {
         StudentDb db= new StudentDb();
         db.connection();
         db.insert(s1);
+
     }
 }
