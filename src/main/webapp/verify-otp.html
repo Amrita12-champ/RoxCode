@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP - RoxCode</title>
+
+    <link rel="stylesheet" href="css/verify-otp.css">
+</head>
+
+<body>
+
+<div class="otp-page">
+
+    <div class="otp-card">
+
+        <!-- Brand -->
+        <div class="brand">
+            <div class="brand-icon">▦</div>
+            <span>RoxCode</span>
+        </div>
+
+        <!-- Heading -->
+        <h1>Verify OTP</h1>
+
+        <p class="description">
+            Enter the 6-digit OTP sent to your registered email address.
+        </p>
+
+        <!-- OTP Input -->
+        <div class="otp-input-box">
+
+            <input type="text" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+            <input type="text" maxlength="1" inputmode="numeric">
+
+        </div>
+
+        <!-- Verify Button -->
+        <button type="button" class="verify-btn" onclick="verifyOTP()">
+            Verify OTP
+        </button>
+
+        <!-- Resend -->
+        <div class="resend">
+            Didn't receive the OTP?
+            <a href="#" onclick="resendOTP(event)">Resend OTP</a>
+        </div>
+
+        <!-- Back -->
+        <div class="back-login">
+            <a href="forgot-password.html">← Back</a>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    // Get all OTP input boxes
+    const otpInputs = document.querySelectorAll(".otp-input-box input");
+
+
+    // Automatically move to next box
+    otpInputs.forEach((input, index) => {
+
+        input.addEventListener("input", function () {
+
+            // Allow only numbers
+            this.value = this.value.replace(/[^0-9]/g, "");
+
+            if (this.value !== "" && index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+            }
+
+        });
+
+
+        // Backspace moves to previous box
+        input.addEventListener("keydown", function (event) {
+
+            if (event.key === "Backspace" && this.value === "" && index > 0) {
+                otpInputs[index - 1].focus();
+            }
+
+        });
+
+    });
+
+
+    // Verify OTP
+    function verifyOTP() {
+
+        let otp = "";
+
+        otpInputs.forEach(input => {
+            otp += input.value;
+        });
+
+
+        // Check OTP length
+        if (otp.length !== 6) {
+            alert("Please enter the 6-digit OTP.");
+            return;
+        }
+
+
+        // Frontend testing only
+        window.location.href = "reset-password.html";
+    }
+
+
+    // Resend OTP
+    function resendOTP(event) {
+
+        event.preventDefault();
+
+        alert("OTP resend functionality will be connected with the backend.");
+    }
+
+</script>
+
+</body>
+</html>

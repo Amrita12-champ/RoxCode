@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RoxCode - Login</title>
- 
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/login.css">
 </head>
@@ -27,13 +27,13 @@
         <span class="app-name">RoxCode</span>
     </div>
 
-    
+
     <div class="form-container">
         <h2 class="form-heading">Login</h2>
 
         <form action="Admin_login" method="POST" class="auth-form">
 
-           
+
             <div class="pill-input-box">
                 <div class="icon-bubble">
                     <i class="fa-solid fa-bullseye"></i>
@@ -48,13 +48,21 @@
                 <input type="password" name="password" placeholder="Password" required>
             </div>
 
-          
+
             <div class="form-bottom-row">
-                <a href="forgot-password.jsp" class="forgot-link">Forgot password?</a>
-                <button type="submit" class="btn-teal-login">Login</button>
+
+                <!-- Forgot Password -->
+                <a href="forgot-password.html" class="forgot-link">
+                    Forgot password?
+                </a>
+
+                <button type="submit" class="btn-teal-login">
+                    Login
+                </button>
+
             </div>
 
-          
+
             <div class="register-footer">
                 <span>Don't have an account?</span>
                 <a href="register.html" class="register-link">Register</a>
