@@ -5,6 +5,7 @@
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
   <welcome-file-list>
+<!--    <welcome-file>dashboard.html</welcome-file>-->
     <welcome-file>login.html</welcome-file>
     <welcome-file>register.html</welcome-file>
   </welcome-file-list>
