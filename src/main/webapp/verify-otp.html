@@ -27,22 +27,36 @@
             Enter the 6-digit OTP sent to your registered email address.
         </p>
 
-        <!-- OTP Input -->
-        <div class="otp-input-box">
+        <!-- OTP Form -->
+        <form action="verify-otp" method="POST" id="otpForm">
 
-            <input type="text" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
-            <input type="text" maxlength="1" inputmode="numeric">
+            <!-- OTP Input -->
+            <div class="otp-input-box">
 
-        </div>
+                <input type="text" maxlength="1" inputmode="numeric"
+                       autocomplete="one-time-code">
 
-        <!-- Verify Button -->
-        <button type="button" class="verify-btn" onclick="verifyOTP()">
-            Verify OTP
-        </button>
+                <input type="text" maxlength="1" inputmode="numeric">
+
+                <input type="text" maxlength="1" inputmode="numeric">
+
+                <input type="text" maxlength="1" inputmode="numeric">
+
+                <input type="text" maxlength="1" inputmode="numeric">
+
+                <input type="text" maxlength="1" inputmode="numeric">
+
+            </div>
+
+            <!-- Hidden field for complete OTP -->
+            <input type="hidden" name="otp" id="otp">
+
+            <!-- Verify Button -->
+            <button type="submit" class="verify-btn">
+                Verify OTP
+            </button>
+
+        </form>
 
         <!-- Resend -->
         <div class="resend">
@@ -65,6 +79,8 @@
     // Get all OTP input boxes
     const otpInputs = document.querySelectorAll(".otp-input-box input");
 
+    const otpHidden = document.getElementById("otp");
+
 
     // Automatically move to next box
     otpInputs.forEach((input, index) => {
@@ -84,7 +100,10 @@
         // Backspace moves to previous box
         input.addEventListener("keydown", function (event) {
 
-            if (event.key === "Backspace" && this.value === "" && index > 0) {
+            if (event.key === "Backspace" &&
+                this.value === "" &&
+                index > 0) {
+
                 otpInputs[index - 1].focus();
             }
 
@@ -93,8 +112,8 @@
     });
 
 
-    // Verify OTP
-    function verifyOTP() {
+    // Before submitting form, combine all 6 boxes
+    document.getElementById("otpForm").addEventListener("submit", function (event) {
 
         let otp = "";
 
@@ -105,14 +124,18 @@
 
         // Check OTP length
         if (otp.length !== 6) {
+
+            event.preventDefault();
+
             alert("Please enter the 6-digit OTP.");
             return;
         }
 
 
-        // Frontend testing only
-        window.location.href = "reset-password.html";
-    }
+        // Put complete OTP into hidden input
+        otpHidden.value = otp;
+
+    });
 
 
     // Resend OTP
@@ -120,7 +143,8 @@
 
         event.preventDefault();
 
-        alert("OTP resend functionality will be connected with the backend.");
+        alert("Resend OTP will be connected with backend.");
+
     }
 
 </script>
