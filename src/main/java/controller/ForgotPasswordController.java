@@ -1,5 +1,6 @@
 package controller;
 
+import dao.AdminDb;
 import dao.StudentDb;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -20,28 +21,33 @@ public class ForgotPasswordController extends HttpServlet {
 
         String email = req.getParameter("email");
 
-        StudentDb db = new StudentDb();
-        db.connection();
+        StudentDb sdb = new StudentDb();
+        sdb.connection();
 
-        boolean exists = db.emailExists(email);
+        AdminDb adb = new AdminDb();
+        adb.connection();
 
-        if (exists) {
+        boolean isStudent = sdb.emailExists(email);
+        boolean isAdmin = adb.emailExists(email);
 
-            // Generate 6-digit OTP
+        if (isStudent || isAdmin) {
+
+            // Generate 6 digit OTP
             int otp = 100000 + new Random().nextInt(900000);
 
-            // Store email and OTP in session
+            // Store email, OTP, and user type in session
             HttpSession session = req.getSession();
             session.setAttribute("email", email);
             session.setAttribute("otp", otp);
+            session.setAttribute("userType", isAdmin ? "ADMIN" : "STUDENT");
 
+            // Show OTP in IntelliJ console
             System.out.println("Generated OTP: " + otp);
 
-            // Go to OTP verification page
+            // Open OTP page
             resp.sendRedirect("verify-otp.html");
 
         } else {
-
             resp.getWriter().println("Email is not registered.");
         }
     }
