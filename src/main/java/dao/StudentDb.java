@@ -2,8 +2,11 @@ package dao;
 
 import entity.Admin;
 import entity.Student;
+import entity.Problem;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StudentDb {
     private static final String url = "jdbc:mysql://localhost:3306/RoxCode";
@@ -125,7 +128,6 @@ public class StudentDb {
         }
     }
 
-    // FIX: Updated to fetch column "Pass" (or column 3) and return null if not found
     public String SearchAdm(String email) {
         String query = "SELECT Pass FROM Admin_register WHERE email = ?";
         try {
@@ -135,11 +137,37 @@ public class StudentDb {
             if (rs.next()) {
                 return rs.getString("Pass");
             } else {
-                return null; // Return null so LoginController knows user wasn't found
+                return null;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    // ==========================================
+    // PROBLEM DATABASE METHODS
+    // ==========================================
+
+    public List<Problem> getAllProblems() {
+        List<Problem> problems = new ArrayList<>();
+        String query = "SELECT * FROM problems";
+
+        try {
+            PreparedStatement pst = con.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                problems.add(new Problem(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("difficulty"),
+                        rs.getString("category"),
+                        rs.getString("acceptance_rate")
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return problems;
     }
 
     // ==========================================

@@ -34,15 +34,17 @@
           <span>RoxCode</span>
         </div>
 
+        <!-- DYNAMIC USER PROFILE SIDEBAR -->
         <div class="profile-section">
-          <div class="avatar">P</div>
-          <div class="profile-name">P Panigrahi</div>
-          <div class="profile-email">Panigrahi@roxcode.io</div>
+          <div class="avatar" id="userAvatar">U</div>
+          <div class="profile-name" id="sidebarProfileName">User Name</div>
+          <div class="profile-email" id="sidebarProfileEmail">user@roxcode.io</div>
         </div>
 
         <nav class="nav-menu">
-          <a href="#" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
-          <a href="#" class="nav-item"><i class="fa-solid fa-code"></i> Problems</a>
+          <a href="dashboard.html" class="nav-item active"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+          <!-- UPDATED LINK: Points to problems.html -->
+          <a href="problems.html" class="nav-item"><i class="fa-solid fa-code"></i> Problems</a>
           <a href="#" class="nav-item"><i class="fa-solid fa-list-check"></i> Submissions</a>
           <a href="#" class="nav-item"><i class="fa-solid fa-terminal"></i> Playground</a>
           <a href="#" class="nav-item"><i class="fa-solid fa-chart-line"></i> Analytics</a>
@@ -51,7 +53,8 @@
         </nav>
       </div>
 
-      <a href="login.html" class="logout-btn">
+      <!-- LOGOUT CALLS SERVLET -->
+      <a href="LogoutController" class="logout-btn">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
       </a>
     </aside>
@@ -61,7 +64,8 @@
 
       <!-- Header Bar -->
       <header class="header-bar">
-        <h1 class="greeting">Welcome Pravat !</h1>
+        <!-- DYNAMIC WELCOME GREETING -->
+        <h1 class="greeting" id="welcomeGreeting">Welcome User !</h1>
         <div class="header-controls">
           <div class="pill-search-box">
             <i class="fa-solid fa-magnifying-glass"></i>
@@ -196,6 +200,36 @@
 
   </div>
 </div>
+
+<!-- BACKEND INTEGRATION SCRIPT -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Fetch session data from UserDataController servlet
+    fetch("UserDataController")
+            .then(response => {
+              if (!response.ok) {
+                window.location.href = "login.html";
+                return;
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data && data.email) {
+                const rawName = data.email.split('@')[0];
+                const formattedName = rawName.charAt(0).toUpperCase() + rawName.slice(1);
+                const initial = formattedName.charAt(0).toUpperCase();
+
+                document.getElementById("welcomeGreeting").textContent = "Welcome " + formattedName + " !";
+                document.getElementById("sidebarProfileName").textContent = formattedName;
+                document.getElementById("sidebarProfileEmail").textContent = data.email;
+                document.getElementById("userAvatar").textContent = initial;
+              }
+            })
+            .catch(error => {
+              console.error("Error loading session details:", error);
+            });
+  });
+</script>
 
 </body>
 </html>

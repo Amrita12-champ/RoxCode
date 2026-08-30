@@ -17,19 +17,10 @@ public class DashBoardController extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        // Check if user has an active session
         if (session != null && session.getAttribute("userEmail") != null) {
-            // Forward/Redirect to dashboard.html in webapp root
             response.sendRedirect("dashboard.html");
         } else {
-            // Kick unauthenticated users back to login
             response.sendRedirect("login.html");
         }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        doGet(request, response);
     }
 }
