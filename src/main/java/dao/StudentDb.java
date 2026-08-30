@@ -8,21 +8,26 @@ import java.sql.*;
 public class StudentDb {
     private static final String url = "jdbc:mysql://localhost:3306/RoxCode";
     private static final String user = "root";
-    private static final String pass = "a34862@TKRS";
+    private static final String pass = "Satya@2005";
     private Connection con = null;
+
+    // Constructor initializes database connection automatically
+    public StudentDb() {
+        connection();
+    }
 
     public void connection() {
         try {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-            } catch (ClassNotFoundException ex) {
-                throw new RuntimeException(ex);
-            }
+            Class.forName("com.mysql.cj.jdbc.Driver");
             con = DriverManager.getConnection(url, user, pass);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException("Database connection error: " + e.getMessage(), e);
         }
     }
+
+    // ==========================================
+    // STUDENT DATABASE METHODS
+    // ==========================================
 
     public int insert(Student a) {
         String query = "insert into register values (?,?,?)";
@@ -36,7 +41,6 @@ public class StudentDb {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public boolean delete(String email) {
@@ -44,10 +48,7 @@ public class StudentDb {
         try {
             PreparedStatement prt = con.prepareStatement(query);
             prt.setString(1, email);
-            if (prt.executeUpdate() > 0) {
-                return true;
-            }
-            return false;
+            return prt.executeUpdate() > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -67,22 +68,23 @@ public class StudentDb {
     }
 
     public String search(String email) {
-        String sql = "select*from register where email=?";
+        String userPass = null;
         try {
-            PreparedStatement prt = con.prepareStatement(sql);
-            prt.setString(1, email);
-            ResultSet rs = prt.executeQuery();
+            PreparedStatement pst = con.prepareStatement("SELECT Pass FROM register WHERE email = ?");
+            pst.setString(1, email);
+            ResultSet rs = pst.executeQuery();
             if (rs.next()) {
-                return rs.getString(2);
-            } else
-                return "Invalid credential";
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+                userPass = rs.getString("Pass");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return userPass;
     }
 
-
-    //Admin Database
+    // ==========================================
+    // ADMIN DATABASE METHODS
+    // ==========================================
 
     public int insert(Admin a) {
         String query = "insert into Admin_register values (?,?,?)";
@@ -117,29 +119,32 @@ public class StudentDb {
             prt.setString(2, a.getPassword());
             prt.setString(3, a.getEmail());
 
-
             return prt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    // FIX: Updated to fetch column "Pass" (or column 3) and return null if not found
     public String SearchAdm(String email) {
-        String query = "select * from Admin_register where email=?";
+        String query = "SELECT Pass FROM Admin_register WHERE email = ?";
         try {
             PreparedStatement prt = con.prepareStatement(query);
             prt.setString(1, email);
             ResultSet rs = prt.executeQuery();
             if (rs.next()) {
-                return rs.getString(2);
+                return rs.getString("Pass");
             } else {
-                return "Invalid";
+                return null; // Return null so LoginController knows user wasn't found
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    // ==========================================
+    // UTILITY METHODS
+    // ==========================================
 
     public boolean emailExists(String email) {
         String sql = "SELECT email FROM register WHERE email = ?";
@@ -147,7 +152,7 @@ public class StudentDb {
             PreparedStatement prt = con.prepareStatement(sql);
             prt.setString(1, email);
             ResultSet rs = prt.executeQuery();
-            return rs.next(); // Returns true if email found, false otherwise
+            return rs.next();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -168,5 +173,3 @@ public class StudentDb {
         }
     }
 }
-
-

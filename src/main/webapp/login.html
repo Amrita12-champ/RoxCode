@@ -31,14 +31,15 @@
     <div class="form-container">
         <h2 class="form-heading">Login</h2>
 
-        <form action="Admin_login" method="POST" class="auth-form">
+        <!-- FIX: Action changed to "LoginController" so it doesn't trigger registration -->
+        <form action="LoginController" method="POST" class="auth-form">
 
-
+            <!-- Input names 'email' and 'password' match request.getParameter() -->
             <div class="pill-input-box">
                 <div class="icon-bubble">
                     <i class="fa-solid fa-bullseye"></i>
                 </div>
-                <input type="text" name="email" placeholder="Email or phone number" required autocomplete="off">
+                <input type="email" name="email" placeholder="Email address" required autocomplete="off">
             </div>
 
             <div class="pill-input-box">
