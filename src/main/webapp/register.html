@@ -100,8 +100,6 @@
                 <div id="fullNameError" class="field-error"></div>
 
 
-
-
                 <!-- EMAIL -->
                 <div class="pill-input-box">
 
@@ -131,10 +129,6 @@
                            placeholder="Password"
                            required>
 
-                    <i class="fa-solid fa-eye password-eye"
-                       onclick="togglePassword('password', this)">
-                    </i>
-
                 </div>
 
 
@@ -149,10 +143,6 @@
                            id="confirmPassword"
                            placeholder="Confirm Password"
                            required>
-
-                    <i class="fa-solid fa-eye password-eye"
-                       onclick="togglePassword('confirmPassword', this)">
-                    </i>
 
                 </div>
 
@@ -230,6 +220,7 @@
     /* =========================================
        FULL NAME VALIDATION
        ========================================= */
+
     function validateFullName() {
 
         const fullName =
@@ -305,7 +296,6 @@
 
         return true;
     }
-
 
 </script>
 

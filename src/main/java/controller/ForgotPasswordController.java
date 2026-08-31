@@ -1,4 +1,5 @@
-package controller;
+```java
+        package controller;
 
 import dao.AdminDb;
 import dao.StudentDb;
@@ -52,3 +53,4 @@ public class ForgotPasswordController extends HttpServlet {
         }
     }
 }
+```
