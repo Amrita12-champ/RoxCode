@@ -1,5 +1,4 @@
-```java
-        package dao;
+package dao;
 
 import entity.Admin;
 import entity.Student;
@@ -13,19 +12,22 @@ public class StudentDb {
 
     private static final String url = "jdbc:mysql://localhost:3306/RoxCode";
     private static final String user = "root";
-    private static final String pass = "Satya@2005";
+    private static final String pass = "YOUR_MYSQL_PASSWORD";
 
     private Connection con = null;
 
-    // Constructor initializes database connection automatically
     public StudentDb() {
         connection();
     }
 
+    // ================= CONNECTION =================
+
     public void connection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
+
             con = DriverManager.getConnection(url, user, pass);
+
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException("Database connection error: " + e.getMessage(), e);
         }
@@ -34,10 +36,11 @@ public class StudentDb {
     // ================= STUDENT =================
 
     public int insert(Student a) {
-        String query = "insert into register values (?,?,?)";
+        String query = "INSERT INTO register VALUES (?,?,?)";
 
         try {
             PreparedStatement prt = con.prepareStatement(query);
+
             prt.setString(1, a.getName());
             prt.setString(2, a.getEmail());
             prt.setString(3, a.getPassword());
@@ -50,10 +53,11 @@ public class StudentDb {
     }
 
     public boolean delete(String email) {
-        String query = "delete from register where email=?";
+        String query = "DELETE FROM register WHERE email=?";
 
         try {
             PreparedStatement prt = con.prepareStatement(query);
+
             prt.setString(1, email);
 
             return prt.executeUpdate() > 0;
@@ -64,10 +68,11 @@ public class StudentDb {
     }
 
     public int update(Student a) {
-        String query = "update register set name=?, Pass=? where email=?";
+        String query = "UPDATE register SET name=?, Pass=? WHERE email=?";
 
         try {
             PreparedStatement prt = con.prepareStatement(query);
+
             prt.setString(1, a.getName());
             prt.setString(2, a.getPassword());
             prt.setString(3, a.getEmail());
@@ -80,32 +85,33 @@ public class StudentDb {
     }
 
     public String search(String email) {
-        String userPass = null;
+        String query = "SELECT Pass FROM register WHERE email=?";
 
         try {
-            PreparedStatement pst =
-                    con.prepareStatement("SELECT Pass FROM register WHERE email = ?");
+            PreparedStatement prt = con.prepareStatement(query);
 
-            pst.setString(1, email);
+            prt.setString(1, email);
 
-            ResultSet rs = pst.executeQuery();
+            ResultSet rs = prt.executeQuery();
 
             if (rs.next()) {
-                userPass = rs.getString("Pass");
+                return rs.getString("Pass");
             }
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            return null;
 
-        return userPass;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    // Check whether student email exists
     public boolean emailExists(String email) {
-        String sql = "SELECT email FROM register WHERE email = ?";
+        String query = "SELECT email FROM register WHERE email=?";
 
         try {
-            PreparedStatement prt = con.prepareStatement(sql);
+            PreparedStatement prt = con.prepareStatement(query);
+
             prt.setString(1, email);
 
             ResultSet rs = prt.executeQuery();
@@ -117,11 +123,13 @@ public class StudentDb {
         }
     }
 
+    // Update student password
     public boolean updatePassword(String email, String newPassword) {
-        String query = "UPDATE register SET Pass = ? WHERE email = ?";
+        String query = "UPDATE register SET Pass=? WHERE email=?";
 
         try {
             PreparedStatement prt = con.prepareStatement(query);
+
             prt.setString(1, newPassword);
             prt.setString(2, email);
 
@@ -140,7 +148,7 @@ public class StudentDb {
     // ================= ADMIN =================
 
     public int insert(Admin a) {
-        String query = "insert into Admin_register values (?,?,?)";
+        String query = "INSERT INTO Admin_register VALUES (?,?,?)";
 
         try {
             PreparedStatement prt = con.prepareStatement(query);
@@ -157,10 +165,11 @@ public class StudentDb {
     }
 
     public boolean delete(Admin a) {
-        String query = "delete from Admin_register where email=?";
+        String query = "DELETE FROM Admin_register WHERE email=?";
 
         try {
             PreparedStatement prt = con.prepareStatement(query);
+
             prt.setString(1, a.getEmail());
 
             return prt.executeUpdate() > 0;
@@ -171,7 +180,7 @@ public class StudentDb {
     }
 
     public int update(Admin a) {
-        String query = "update Admin_register set name=?, Pass=? where email=?";
+        String query = "UPDATE Admin_register SET name=?, Pass=? WHERE email=?";
 
         try {
             PreparedStatement prt = con.prepareStatement(query);
@@ -188,7 +197,7 @@ public class StudentDb {
     }
 
     public String SearchAdm(String email) {
-        String query = "SELECT Pass FROM Admin_register WHERE email = ?";
+        String query = "SELECT Pass FROM Admin_register WHERE email=?";
 
         try {
             PreparedStatement prt = con.prepareStatement(query);
@@ -199,9 +208,9 @@ public class StudentDb {
 
             if (rs.next()) {
                 return rs.getString("Pass");
-            } else {
-                return null;
             }
+
+            return null;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -230,10 +239,9 @@ public class StudentDb {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return problems;
     }
 }
-```
