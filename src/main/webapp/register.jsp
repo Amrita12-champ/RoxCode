@@ -72,7 +72,8 @@
 
 
             <!-- REGISTRATION FORM -->
-            <form action="register"
+            <!-- FIX: Matched action attribute to your Servlet annotation @WebServlet("/Admin_login") -->
+            <form action="Admin_login"
                   method="post"
                   class="auth-form"
                   onsubmit="return validateRegistration()">
@@ -85,8 +86,9 @@
                         <i class="fa-regular fa-user"></i>
                     </div>
 
+                    <!-- FIX: Changed name="fullName" to name="fullname" to match request.getParameter("fullname") -->
                     <input type="text"
-                           name="fullName"
+                           name="fullname"
                            id="fullName"
                            placeholder="Full Name"
                            required
@@ -96,8 +98,6 @@
                 </div>
 
                 <div id="fullNameError" class="field-error"></div>
-
-
 
 
                 <!-- EMAIL -->
@@ -129,10 +129,6 @@
                            placeholder="Password"
                            required>
 
-                    <i class="fa-solid fa-eye password-eye"
-                       onclick="togglePassword('password', this)">
-                    </i>
-
                 </div>
 
 
@@ -147,10 +143,6 @@
                            id="confirmPassword"
                            placeholder="Confirm Password"
                            required>
-
-                    <i class="fa-solid fa-eye password-eye"
-                       onclick="togglePassword('confirmPassword', this)">
-                    </i>
 
                 </div>
 
@@ -228,6 +220,7 @@
     /* =========================================
        FULL NAME VALIDATION
        ========================================= */
+
     function validateFullName() {
 
         const fullName =
@@ -303,7 +296,6 @@
 
         return true;
     }
-
 
 </script>
 
