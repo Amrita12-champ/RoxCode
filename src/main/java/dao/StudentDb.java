@@ -167,6 +167,20 @@ public class StudentDb {
             return false;
         }
     }
+
+    public boolean validateStudent(String email, String password) {
+        String sql = "SELECT * FROM register WHERE email = ? AND Pass = ?";
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // returns true if email & Pass match
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
 
 

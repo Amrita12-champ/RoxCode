@@ -51,7 +51,7 @@
         </nav>
       </div>
 
-      <a href="login.html" class="logout-btn">
+      <a href="login.jsp" class="logout-btn">
         <i class="fa-solid fa-right-from-bracket"></i> Logout
       </a>
     </aside>

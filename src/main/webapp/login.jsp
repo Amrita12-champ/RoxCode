@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,10 +11,8 @@
 </head>
 <body>
 
-
 <div class="bg-shape bg-shape-1"></div>
 <div class="bg-shape bg-shape-2"></div>
-
 
 <div class="login-card">
 
@@ -27,12 +26,11 @@
         <span class="app-name">RoxCode</span>
     </div>
 
-
     <div class="form-container">
         <h2 class="form-heading">Login</h2>
 
-        <form action="Admin_login" method="POST" class="auth-form">
-
+        <!-- FORM ACTION SET TO login -->
+        <form action="login" method="POST" class="auth-form">
 
             <div class="pill-input-box">
                 <div class="icon-bubble">
@@ -48,24 +46,20 @@
                 <input type="password" name="password" placeholder="Password" required>
             </div>
 
-
             <div class="form-bottom-row">
-
-                <!-- Forgot Password -->
-                <a href="forgot-password.html" class="forgot-link">
+                <!-- Point to .jsp -->
+                <a href="forgot-password.jsp" class="forgot-link">
                     Forgot password?
                 </a>
 
                 <button type="submit" class="btn-teal-login">
                     Login
                 </button>
-
             </div>
-
 
             <div class="register-footer">
                 <span>Don't have an account?</span>
-                <a href="register.html" class="register-link">Register</a>
+                <a href="register.jsp" class="register-link">Register</a>
             </div>
         </form>
     </div>

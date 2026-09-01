@@ -51,7 +51,7 @@ public class ResetPasswordController extends HttpServlet {
 
         if (updated) {
             session.invalidate();
-            resp.sendRedirect("login.html");
+            resp.sendRedirect("login.jsp");
         } else {
             resp.getWriter().println("Failed to update. Email not found in DB.");
         }

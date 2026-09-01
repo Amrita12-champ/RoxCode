@@ -97,4 +97,18 @@ public class AdminDb {
             return false;
         }
     }
+
+    public boolean validateAdmin(String email, String password) {
+        String sql = "SELECT * FROM Admin_register WHERE email = ? AND Pass = ?";
+        try {
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            return rs.next(); // returns true if email & Pass match
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

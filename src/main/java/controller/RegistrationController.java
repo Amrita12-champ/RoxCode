@@ -1,5 +1,4 @@
 package controller;
-
 import dao.AdminDb;
 import dao.StudentDb;
 import entity.Admin;
@@ -18,7 +17,7 @@ public class RegistrationController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Matches name="fullName", name="email", name="password", name="role" from register.html
+        // Matches name="fullName", name="email", name="password", name="role" from register.jsp
         String fullName = request.getParameter("fullName");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
@@ -52,9 +51,8 @@ public class RegistrationController extends HttpServlet {
             result = studentDb.insert(student);
             System.out.println("Student insertion status: " + result);
         }
-
         if (result > 0) {
-            response.sendRedirect("login.html");
+            response.sendRedirect("login.jsp");
         } else {
             response.getWriter().println("Registration failed! Please try again.");
         }

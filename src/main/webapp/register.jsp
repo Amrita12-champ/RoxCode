@@ -59,7 +59,7 @@
 
                 <button type="button"
                         class="tab-btn inactive"
-                        onclick="window.location.href='login.html'">
+                        onclick="window.location.href='login.jsp'">
                     Login
                 </button>
 
@@ -189,7 +189,7 @@
                     <span class="login-prompt">
                         Already have an account?
 
-                        <a href="login.html"
+                        <a href="login.jsp"
                            class="login-link">
                             Login
                         </a>
