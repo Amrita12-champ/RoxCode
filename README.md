@@ -1,5 +1,5 @@
-# 🚀 RoxCode — Automated Online Assessment & Code Submission Engine
+#Enterprise Attendance & Leave Management ERP
 
-An enterprise-grade, automated code evaluation platform built with **Advanced Java (Spring Boot)**. The system enables instructors to create coding challenges with hidden test cases and allows students to write, compile, and execute code in real-time with instant verdict reporting.
+A web-based Attendance & Leave Management ERP designed to simplify and automate student attendance, leave requests, and academic record management.
 
-
+The system provides separate access for Teachers/Admins and Students, with secure authentication, session management, role-based access, and efficient database operations.
