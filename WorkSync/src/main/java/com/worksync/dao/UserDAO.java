@@ -9,17 +9,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 
 public class UserDAO {
 
     public User findByUsername(String username) throws SQLException {
 
-        String sql = """
-                SELECT user_id, username, email, password, role, status, created_at
-                FROM users
-                WHERE username = ?
-                """;
+        String sql = "SELECT user_id, username, email, password, role, status, created_at " +
+                "FROM users WHERE username = ?";
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -35,11 +31,8 @@ public class UserDAO {
                     user.setUsername(resultSet.getString("username"));
                     user.setEmail(resultSet.getString("email"));
                     user.setPassword(resultSet.getString("password"));
-
                     user.setRole(Role.valueOf(resultSet.getString("role")));
                     user.setStatus(AccountStatus.valueOf(resultSet.getString("status")));
-
-                    Timestamp timestamp = resultSet.getTimestamp("created_at");
 
                     return user;
                 }
@@ -49,4 +42,3 @@ public class UserDAO {
         return null;
     }
 }
-

@@ -1,4 +1,4 @@
-package com.worksync.service;
+ package com.worksync.service;
 
 import com.worksync.constants.AccountStatus;
 import com.worksync.dao.UserDAO;
@@ -11,11 +11,10 @@ public class UserService {
 
     private final UserDAO userDAO = new UserDAO();
 
-    public User authenticate(String username, String password)
-            throws SQLException {
+    public User authenticate(String username, String password) throws SQLException {
 
-        if (username == null || username.isBlank()
-                || password == null || password.isBlank()) {
+        if (username == null || username.isEmpty()
+                || password == null || password.isEmpty()) {
             return null;
         }
 

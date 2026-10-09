@@ -16,7 +16,13 @@ import java.sql.SQLException;
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    private final UserService userService = new UserService();
+    private UserService userService;
+
+    @Override
+    public void init() throws ServletException {
+        userService = new UserService();
+        System.out.println("WorkSync LoginServlet initialized.");
+    }
 
     @Override
     protected void doGet(HttpServletRequest request,
@@ -34,12 +40,20 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
+        System.out.println("WorkSync: Login request received.");
+
         try {
             User user = userService.authenticate(username, password);
 
+            System.out.println("WorkSync: Authentication result = "
+                    + (user != null));
+
             if (user == null) {
-                request.setAttribute("error", "Invalid username or password.");
-                request.getRequestDispatcher("/login.jsp").forward(request, response);
+                request.setAttribute("error",
+                        "Invalid username or password, or inactive account.");
+
+                request.getRequestDispatcher("/login.jsp")
+                        .forward(request, response);
                 return;
             }
 
@@ -54,19 +68,27 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("username", user.getUsername());
             session.setAttribute("role", user.getRole().name());
 
-            switch (user.getRole()) {
-                case SUPER_ADMIN, HR_MANAGER ->
-                        response.sendRedirect(request.getContextPath() + "/dashboard");
-                case DEPARTMENT_MANAGER ->
-                        response.sendRedirect(request.getContextPath() + "/dashboard");
-                case EMPLOYEE ->
-                        response.sendRedirect(request.getContextPath() + "/dashboard");
-                case AUDITOR ->
-                        response.sendRedirect(request.getContextPath() + "/dashboard");
-            }
+            System.out.println("WorkSync: Session created successfully.");
+
+            response.sendRedirect(
+                    request.getContextPath() + "/dashboard"
+            );
 
         } catch (SQLException e) {
-            throw new ServletException("Unable to authenticate user.", e);
+            System.err.println("WorkSync database error during login:");
+            e.printStackTrace();
+
+            throw new ServletException(
+                    "Database error during login.", e
+            );
+
+        } catch (RuntimeException e) {
+            System.err.println("WorkSync authentication error:");
+            e.printStackTrace();
+
+            throw new ServletException(
+                    "Authentication processing failed.", e
+            );
         }
     }
 }

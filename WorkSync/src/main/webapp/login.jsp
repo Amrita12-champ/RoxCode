@@ -1,3 +1,4 @@
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -5,7 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WorkSync | Login</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/login.css">
+
+    <link rel="stylesheet"
+          href="<%= request.getContextPath() %>/css/login.css">
 </head>
 <body>
 
@@ -13,7 +16,7 @@
 
     <div class="login-brand">
         <h1>Work<span>Sync</span></h1>
-        <p>Workforce Management & Operations Platform</p>
+        <p>Workforce Management &amp; Operations Platform</p>
     </div>
 
     <div class="login-card">
@@ -26,25 +29,29 @@
         </div>
         <% } %>
 
-        <form action="${pageContext.request.contextPath}/login" method="post">
+        <form action="<%= request.getContextPath() %>/login" method="post">
 
-            <label for="username">Username</label>
-            <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    placeholder="Enter your username"
-                    autocomplete="username"
-                    required>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your username"
+                        autocomplete="username"
+                        required>
+            </div>
 
-            <label for="password">Password</label>
-            <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    autocomplete="current-password"
-                    required>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required>
+            </div>
 
             <button type="submit">Sign In</button>
 
