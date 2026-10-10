@@ -10,9 +10,8 @@
 
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/css/employees.css">
-
-
 </head>
+
 <body>
 
 <div class="page-container">
@@ -43,11 +42,12 @@
             </div>
 
             <span class="count-badge">
-            Total: <c:out value="${employees.size()}"/>
-        </span>
+                Total: <c:out value="${employees.size()}"/>
+            </span>
         </div>
 
         <div class="table-wrapper">
+
             <table>
                 <thead>
                 <tr>
@@ -57,14 +57,17 @@
                     <th>Phone</th>
                     <th>Status</th>
                     <th>Joining Date</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
 
                 <tbody>
+
                 <c:choose>
+
                     <c:when test="${empty employees}">
                         <tr>
-                            <td colspan="6" class="empty-state">
+                            <td colspan="7" class="empty-state">
                                 <div class="empty-icon">♙</div>
                                 <h3>No employees found</h3>
                                 <p>Employee records will appear here when available.</p>
@@ -73,23 +76,31 @@
                     </c:when>
 
                     <c:otherwise>
+
                         <c:forEach var="employee" items="${employees}">
+
                             <tr>
-                                <td>#<c:out value="${employee.employeeId}"/></td>
+
+                                <td>
+                                    #<c:out value="${employee.employeeId}"/>
+                                </td>
 
                                 <td>
                                     <div class="employee-name">
-                                    <span class="employee-avatar">
-                                        <c:out value="${employee.firstName.substring(0,1)}"/>
-                                    </span>
+
+                                        <span class="employee-avatar">
+                                            <c:out value="${employee.firstName.substring(0,1)}"/>
+                                        </span>
 
                                         <div>
                                             <strong>
                                                 <c:out value="${employee.firstName}"/>
                                                 <c:out value="${employee.lastName}"/>
                                             </strong>
+
                                             <small>Employee</small>
                                         </div>
+
                                     </div>
                                 </td>
 
@@ -102,23 +113,37 @@
                                 </td>
 
                                 <td>
-                                <span class="status-badge">
-                                    <c:out value="${employee.employmentStatus}"/>
-                                </span>
+                                    <span class="status-badge">
+                                        <c:out value="${employee.employmentStatus}"/>
+                                    </span>
                                 </td>
 
                                 <td>
                                     <c:out value="${employee.joiningDate}"/>
                                 </td>
+
+                                <td>
+                                    <a href="${pageContext.request.contextPath}/employees?action=edit&amp;id=${employee.employeeId}"
+                                       class="edit-button">
+                                        Edit
+                                    </a>
+                                </td>
+
                             </tr>
+
                         </c:forEach>
+
                     </c:otherwise>
+
                 </c:choose>
+
                 </tbody>
             </table>
+
         </div>
 
     </section>
+
 </div>
 
 </body>
