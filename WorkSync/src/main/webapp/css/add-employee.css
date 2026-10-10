@@ -1,0 +1,161 @@
+body {
+    background: #0d0d14;
+    color: #f4f3fb;
+    font-family: Arial, sans-serif;
+}
+
+.form-page {
+    max-width: 1050px;
+    margin: auto;
+    padding: 40px 25px;
+}
+
+.form-page-header {
+    margin-bottom: 28px;
+}
+
+.form-page-header h1 {
+    font-size: 29px;
+    margin-bottom: 10px;
+}
+
+.form-page-header p,
+.form-section > p {
+    color: #9695ad;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.back-link {
+    display: inline-block;
+    color: #a78bfa;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
+
+.employee-form {
+    background: #161621;
+    border: 1px solid #29293a;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.form-section {
+    padding: 27px;
+    border-bottom: 1px solid #29293a;
+}
+
+.form-section h2 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.form-section > p {
+    margin-bottom: 24px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 23px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+}
+
+.field label {
+    color: #c9c7da;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.field input,
+.field select {
+    width: 100%;
+    min-height: 43px;
+    padding: 11px 12px;
+    background: #10101a;
+    color: #f4f3fb;
+    border: 1px solid #35354a;
+    border-radius: 8px;
+    outline: none;
+    font-size: 12px;
+}
+
+.field input:focus,
+.field select:focus {
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px #a78bfa15;
+}
+
+.field select option {
+    background: #161621;
+    color: #f4f3fb;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding: 22px 27px;
+}
+
+.cancel-button,
+.save-button {
+    border-radius: 8px;
+    padding: 12px 17px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cancel-button {
+    color: #c9c7da;
+    background: #20202d;
+    border: 1px solid #35354a;
+}
+
+.save-button {
+    color: white;
+    background: #8b5cf6;
+    border: 1px solid #8b5cf6;
+}
+
+.save-button:hover {
+    background: #7c3aed;
+}
+
+.form-alert {
+    padding: 14px 17px;
+    margin-bottom: 20px;
+    background: #7f1d1d30;
+    color: #fca5a5;
+    border: 1px solid #ef444455;
+    border-radius: 9px;
+    font-size: 12px;
+}
+
+@media (max-width: 650px) {
+    .form-page {
+        padding: 25px 14px;
+    }
+
+    .form-grid {
+    grid-template-columns: 1fr;
+}
+
+    .form-section {
+        padding: 21px 17px;
+    }
+
+    .form-actions {
+        padding: 18px 17px;
+    }
+
+
+}
