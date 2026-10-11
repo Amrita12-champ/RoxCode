@@ -1,0 +1,160 @@
+.attendance-page {
+    padding: 32px;
+    min-height: 100vh;
+    background: var(--background);
+    color: var(--text);
+}
+
+.attendance-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.eyebrow {
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.attendance-header h1 {
+    margin: 10px 0;
+    font-size: 30px;
+}
+
+.subtitle {
+    color: var(--muted);
+}
+
+.back-button,
+.primary-button,
+.edit-button {
+    display: inline-block;
+    padding: 11px 17px;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary-bright);
+    color: white;
+    text-decoration: none;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.attendance-panel {
+    margin-bottom: 24px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface);
+}
+
+.date-filter {
+    display: flex;
+    align-items: end;
+    gap: 16px;
+    margin-bottom: 25px;
+}
+
+.attendance-form {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    margin-top: 22px;
+}
+
+.attendance-form label,
+.date-filter label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.attendance-form input,
+.attendance-form select,
+.date-filter input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--background);
+    color: var(--text);
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    white-space: nowrap;
+}
+
+.table-container th,
+.table-container td {
+    padding: 15px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    font-size: 13px;
+}
+
+.table-container th {
+    color: var(--muted);
+    font-weight: 600;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 20px;
+    background: rgba(167, 139, 250, 0.14);
+    color: var(--primary);
+    font-size: 11px;
+}
+
+.empty-state {
+    padding: 35px !important;
+    color: var(--muted);
+    text-align: center !important;
+    white-space: normal;
+}
+
+.error-message {
+    margin-bottom: 20px;
+    padding: 14px;
+    border: 1px solid #ef4444;
+    border-radius: 8px;
+    background: rgba(239, 68, 68, 0.1);
+    color: #fca5a5;
+}
+
+@media (max-width: 900px) {
+    .attendance-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .attendance-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 600px) {
+    .attendance-page {
+        padding: 18px;
+    }
+
+    .attendance-form {
+        grid-template-columns: 1fr;
+    }
+
+    .date-filter {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
