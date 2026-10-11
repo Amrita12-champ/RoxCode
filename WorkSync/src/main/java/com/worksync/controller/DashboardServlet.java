@@ -17,21 +17,30 @@ public class DashboardServlet extends HttpServlet {
                          HttpServletResponse response)
             throws ServletException, IOException {
 
-        System.out.println("WorkSync: Dashboard request received.");
-
+        // Step 1: Check whether the user is logged in
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("userId") == null) {
-            System.out.println("WorkSync: No authenticated session.");
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
-        System.out.println("WorkSync: Dashboard session verified.");
+        // Step 2: Allow only Super Admin
+        String role = (String) session.getAttribute("role");
+
+        if (!"SUPER_ADMIN".equals(role)) {
+            response.sendError(
+                    HttpServletResponse.SC_FORBIDDEN,
+                    "You do not have permission to access this page."
+            );
+            return;
+        }
+
+        // Step 3: Forward to the Super Admin dashboard
+        System.out.println("WorkSync: Super Admin dashboard accessed.");
 
         request.getRequestDispatcher(
                 "/views/dashboard/dashboard.jsp"
         ).forward(request, response);
     }
 }
-

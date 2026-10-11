@@ -29,7 +29,8 @@ public class LoginServlet extends HttpServlet {
                          HttpServletResponse response)
             throws ServletException, IOException {
 
-        request.getRequestDispatcher("/login.jsp").forward(request, response);
+        request.getRequestDispatcher("/login.jsp")
+                .forward(request, response);
     }
 
     @Override
@@ -37,25 +38,26 @@ public class LoginServlet extends HttpServlet {
                           HttpServletResponse response)
             throws ServletException, IOException {
 
+        request.setCharacterEncoding("UTF-8");
+
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-
-        System.out.println("WorkSync: Login request received.");
 
         try {
             User user = userService.authenticate(username, password);
 
-            System.out.println("WorkSync: Authentication result = "
-                    + (user != null));
-
             if (user == null) {
-                request.setAttribute("error",
-                        "Invalid username or password, or inactive account.");
+                request.setAttribute(
+                        "error",
+                        "Invalid username or password, or inactive account."
+                );
 
                 request.getRequestDispatcher("/login.jsp")
                         .forward(request, response);
                 return;
             }
+
+            String role = user.getRole().name();
 
             HttpSession oldSession = request.getSession(false);
 
@@ -64,30 +66,57 @@ public class LoginServlet extends HttpServlet {
             }
 
             HttpSession session = request.getSession(true);
+
             session.setAttribute("userId", user.getUserId());
             session.setAttribute("username", user.getUsername());
-            session.setAttribute("role", user.getRole().name());
+            session.setAttribute("role", role);
 
-            System.out.println("WorkSync: Session created successfully.");
+            switch (role) {
+                case "SUPER_ADMIN":
+                    response.sendRedirect(
+                            request.getContextPath() + "/dashboard"
+                    );
+                    break;
 
-            response.sendRedirect(
-                    request.getContextPath() + "/dashboard"
-            );
+                case "EMPLOYEE":
+                    response.sendRedirect(
+                            request.getContextPath() + "/employee-dashboard"
+                    );
+                    break;
+
+                case "HR_MANAGER":
+                    response.sendRedirect(
+                            request.getContextPath() + "/hr-dashboard"
+                    );
+                    break;
+
+                case "DEPARTMENT_MANAGER":
+                    response.sendRedirect(
+                            request.getContextPath() + "/manager-dashboard"
+                    );
+                    break;
+
+                case "AUDITOR":
+                    response.sendRedirect(
+                            request.getContextPath() + "/auditor-dashboard"
+                    );
+                    break;
+
+                default:
+                    session.invalidate();
+
+                    request.setAttribute(
+                            "error",
+                            "Your account has an unrecognized role. Please contact the administrator."
+                    );
+
+                    request.getRequestDispatcher("/login.jsp")
+                            .forward(request, response);
+            }
 
         } catch (SQLException e) {
-            System.err.println("WorkSync database error during login:");
-            e.printStackTrace();
-
             throw new ServletException(
                     "Database error during login.", e
-            );
-
-        } catch (RuntimeException e) {
-            System.err.println("WorkSync authentication error:");
-            e.printStackTrace();
-
-            throw new ServletException(
-                    "Authentication processing failed.", e
             );
         }
     }
