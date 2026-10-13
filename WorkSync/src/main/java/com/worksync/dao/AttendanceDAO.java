@@ -13,6 +13,7 @@ import java.util.List;
 
 public class AttendanceDAO {
 
+    // Get attendance records for a particular date
     public List<Attendance> getAttendanceByDate(Date date)
             throws SQLException {
 
@@ -30,13 +31,15 @@ public class AttendanceDAO {
                         "ORDER BY e.first_name, e.last_name";
 
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement statement =
+                     connection.prepareStatement(sql)) {
 
             statement.setDate(1, date);
 
             try (ResultSet rs = statement.executeQuery()) {
 
                 while (rs.next()) {
+
                     Attendance attendance = new Attendance();
 
                     attendance.setAttendanceId(
@@ -77,6 +80,8 @@ public class AttendanceDAO {
         return attendanceList;
     }
 
+
+    // Save new attendance or update existing attendance
     public void saveAttendance(
             int employeeId,
             Date date,
@@ -99,33 +104,68 @@ public class AttendanceDAO {
                         "marked_by = VALUES(marked_by)";
 
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement statement =
+                     connection.prepareStatement(sql)) {
 
             statement.setInt(1, employeeId);
             statement.setDate(2, date);
             statement.setString(3, status);
 
-            if (checkIn == null || checkIn.isEmpty()) {
+            // Convert check-in time safely
+            if (checkIn == null || checkIn.trim().isEmpty()) {
+
                 statement.setNull(4, java.sql.Types.TIME);
+
             } else {
-                statement.setTime(4, java.sql.Time.valueOf(checkIn));
+
+                statement.setTime(4, convertTime(checkIn));
             }
 
-            if (checkOut == null || checkOut.isEmpty()) {
+            // Convert check-out time safely
+            if (checkOut == null || checkOut.trim().isEmpty()) {
+
                 statement.setNull(5, java.sql.Types.TIME);
+
             } else {
-                statement.setTime(5, java.sql.Time.valueOf(checkOut));
+
+                statement.setTime(5, convertTime(checkOut));
             }
 
             statement.setString(6, remarks);
 
             if (markedBy == null) {
+
                 statement.setNull(7, java.sql.Types.INTEGER);
+
             } else {
+
                 statement.setInt(7, markedBy);
             }
 
             statement.executeUpdate();
+
+            System.out.println(
+                    "WorkSync: Attendance saved successfully for employee ID "
+                            + employeeId + " on " + date);
         }
     }
+
+
+    // Convert HTML time input (HH:mm) into SQL time (HH:mm:ss)
+    private java.sql.Time convertTime(String timeValue) {
+
+        if (timeValue == null || timeValue.trim().isEmpty()) {
+            return null;
+        }
+
+        timeValue = timeValue.trim();
+
+        // HTML time input normally returns HH:mm
+        if (timeValue.matches("\\d{2}:\\d{2}")) {
+            timeValue = timeValue + ":00";
+        }
+
+        return java.sql.Time.valueOf(timeValue);
+    }
 }
+

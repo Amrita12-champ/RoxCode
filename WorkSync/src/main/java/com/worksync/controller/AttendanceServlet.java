@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @WebServlet("/attendance")
@@ -22,8 +24,9 @@ public class AttendanceServlet extends HttpServlet {
     private AttendanceDAO attendanceDAO;
 
     @Override
-    public void init() {
+    public void init() throws ServletException {
         attendanceDAO = new AttendanceDAO();
+        System.out.println("WorkSync: AttendanceServlet initialized.");
     }
 
     @Override
@@ -33,9 +36,7 @@ public class AttendanceServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        if (session == null ||
-                session.getAttribute("userId") == null) {
-
+        if (session == null || session.getAttribute("userId") == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
@@ -47,10 +48,11 @@ public class AttendanceServlet extends HttpServlet {
         }
 
         try {
-            Date date = Date.valueOf(selectedDate);
+            LocalDate parsedDate = LocalDate.parse(selectedDate);
+            Date sqlDate = Date.valueOf(parsedDate);
 
             List<Attendance> attendanceList =
-                    attendanceDAO.getAttendanceByDate(date);
+                    attendanceDAO.getAttendanceByDate(sqlDate);
 
             request.setAttribute("attendanceList", attendanceList);
             request.setAttribute("selectedDate", selectedDate);
@@ -59,75 +61,96 @@ public class AttendanceServlet extends HttpServlet {
                     "/views/dashboard/attendance.jsp"
             ).forward(request, response);
 
-        } catch (IllegalArgumentException e) {
+        } catch (DateTimeParseException e) {
 
             response.sendError(
                     HttpServletResponse.SC_BAD_REQUEST,
-                    "Invalid attendance date."
+                    "Invalid date. Please select a valid date."
             );
 
         } catch (SQLException e) {
 
+            log("WorkSync: Failed to load attendance records.", e);
+
             throw new ServletException(
-                    "Unable to load attendance records.", e);
+                    "Unable to load attendance records from the database.", e
+            );
         }
     }
+
 
     @Override
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response)
             throws ServletException, IOException {
 
+        System.out.println("\n========== ATTENDANCE DEBUG ==========");
+        System.out.println("POST request received.");
+
         HttpSession session = request.getSession(false);
 
-        if (session == null ||
-                session.getAttribute("userId") == null) {
+        if (session == null || session.getAttribute("userId") == null) {
+            System.out.println("ERROR: User session is missing.");
 
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
+        String employeeIdValue = request.getParameter("employeeId");
+        String dateValue = request.getParameter("attendanceDate");
+        String status = request.getParameter("status");
+        String checkIn = request.getParameter("checkIn");
+        String checkOut = request.getParameter("checkOut");
+        String remarks = request.getParameter("remarks");
+
+        System.out.println("Employee ID = " + employeeIdValue);
+        System.out.println("Attendance Date = " + dateValue);
+        System.out.println("Status = " + status);
+        System.out.println("Check-in = " + checkIn);
+        System.out.println("Check-out = " + checkOut);
+        System.out.println("Remarks = " + remarks);
+
         try {
-            int employeeId = Integer.parseInt(
-                    request.getParameter("employeeId"));
+            if (employeeIdValue == null || employeeIdValue.isEmpty()) {
+                throw new IllegalArgumentException("Employee ID is missing.");
+            }
 
-            Date date = Date.valueOf(
-                    request.getParameter("attendanceDate"));
+            if (dateValue == null || dateValue.isEmpty()) {
+                throw new IllegalArgumentException("Attendance date is missing.");
+            }
 
-            String status = request.getParameter("status");
-            String checkIn = request.getParameter("checkIn");
-            String checkOut = request.getParameter("checkOut");
-            String remarks = request.getParameter("remarks");
+            if (status == null || status.isEmpty()) {
+                throw new IllegalArgumentException("Attendance status is missing.");
+            }
+
+            int employeeId = Integer.parseInt(employeeIdValue);
+            Date date = Date.valueOf(dateValue);
 
             if (!"PRESENT".equals(status)
                     && !"ABSENT".equals(status)
                     && !"HALF_DAY".equals(status)
                     && !"ON_LEAVE".equals(status)) {
-
-                response.sendError(
-                        HttpServletResponse.SC_BAD_REQUEST,
-                        "Invalid attendance status."
-                );
-                return;
+                throw new IllegalArgumentException(
+                        "Invalid attendance status: " + status);
             }
 
-            if (("PRESENT".equals(status)
-                    || "HALF_DAY".equals(status))
+            if (checkIn != null && !checkIn.isEmpty()) {
+                java.sql.Time.valueOf(checkIn + (checkIn.length() == 5 ? ":00" : ""));
+            }
+
+            if (checkOut != null && !checkOut.isEmpty()) {
+                java.sql.Time.valueOf(checkOut + (checkOut.length() == 5 ? ":00" : ""));
+            }
+
+            if (("PRESENT".equals(status) || "HALF_DAY".equals(status))
                     && (checkIn == null || checkIn.isEmpty())) {
-
-                request.getSession().setAttribute(
-                        "attendanceError",
-                        "Check-in time is required for present or half-day attendance."
-                );
-
-                response.sendRedirect(
-                        request.getContextPath() +
-                                "/attendance?date=" + date
-                );
-                return;
+                throw new IllegalArgumentException(
+                        "Check-in time is required for PRESENT or HALF_DAY.");
             }
 
             Integer markedBy = (Integer) session.getAttribute("userId");
+
+            System.out.println("Validation passed. Saving attendance...");
 
             attendanceDAO.saveAttendance(
                     employeeId,
@@ -139,22 +162,31 @@ public class AttendanceServlet extends HttpServlet {
                     markedBy
             );
 
+            System.out.println("SUCCESS: Attendance saved to database.");
+            System.out.println("======================================\n");
+
             response.sendRedirect(
-                    request.getContextPath() +
-                            "/attendance?date=" + date
+                    request.getContextPath() + "/attendance?date=" + date
             );
 
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | NullPointerException e) {
+
+            System.out.println("VALIDATION ERROR: " + e.getMessage());
+            e.printStackTrace();
 
             response.sendError(
                     HttpServletResponse.SC_BAD_REQUEST,
-                    "Invalid employee ID, date, or time."
+                    "Attendance validation failed: " + e.getMessage()
             );
 
         } catch (SQLException e) {
 
-            throw new ServletException(
-                    "Unable to save attendance.", e);
+            System.out.println("DATABASE ERROR: " + e.getMessage());
+            e.printStackTrace();
+
+            throw new ServletException("Unable to save attendance.", e);
         }
     }
+
+
 }

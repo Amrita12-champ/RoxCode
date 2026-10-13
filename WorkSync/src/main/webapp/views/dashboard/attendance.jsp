@@ -1,3 +1,4 @@
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.worksync.model.Attendance" %>
@@ -8,6 +9,10 @@
 
     String selectedDate =
             (String) request.getAttribute("selectedDate");
+
+    if (selectedDate == null || selectedDate.isEmpty()) {
+        selectedDate = java.time.LocalDate.now().toString();
+    }
 
     String attendanceError =
             (String) session.getAttribute("attendanceError");
@@ -44,7 +49,7 @@
         </div>
 
         <a class="back-button"
-           href="${pageContext.request.contextPath}/dashboard">
+           href="<%= request.getContextPath() %>/dashboard">
             Back to Dashboard
         </a>
     </header>
@@ -58,7 +63,7 @@
     <section class="attendance-panel">
 
         <form method="get"
-              action="${pageContext.request.contextPath}/attendance"
+              action="<%= request.getContextPath() %>/attendance"
               class="date-filter">
 
             <div>
@@ -121,13 +126,13 @@
                     <td>
                         <%= attendance.getCheckIn() == null
                                 ? "--"
-                                : attendance.getCheckIn() %>
+                                : attendance.getCheckIn().toString().substring(0, 5) %>
                     </td>
 
                     <td>
                         <%= attendance.getCheckOut() == null
                                 ? "--"
-                                : attendance.getCheckOut() %>
+                                : attendance.getCheckOut().toString().substring(0, 5) %>
                     </td>
 
                     <td>
@@ -143,16 +148,16 @@
                                         '<%= attendance.getEmployeeId() %>',
                                         '<%= attendance.getStatus() %>',
                                         '<%= attendance.getCheckIn() == null
-                                            ? "" : attendance.getCheckIn().toString().substring(0, 5) %>',
+                                                ? "" : attendance.getCheckIn().toString().substring(0, 5) %>',
                                         '<%= attendance.getCheckOut() == null
-                                            ? "" : attendance.getCheckOut().toString().substring(0, 5) %>'
+                                                ? "" : attendance.getCheckOut().toString().substring(0, 5) %>'
                                         )">
                             Edit
                         </button>
                     </td>
                 </tr>
 
-                <% }
+                <%  }
                 } else { %>
 
                 <tr>
@@ -176,11 +181,12 @@
         <h2>Mark or Update Attendance</h2>
 
         <form method="post"
-              action="${pageContext.request.contextPath}/attendance"
+              action="<%= request.getContextPath() %>/attendance"
               class="attendance-form">
 
             <div>
                 <label for="employeeId">Employee ID</label>
+
                 <input type="number"
                        id="employeeId"
                        name="employeeId"
@@ -190,6 +196,7 @@
 
             <div>
                 <label for="attendanceDate">Date</label>
+
                 <input type="date"
                        id="attendanceDate"
                        name="attendanceDate"
@@ -210,16 +217,23 @@
 
             <div>
                 <label for="checkIn">Check-In Time</label>
-                <input type="time" id="checkIn" name="checkIn">
+
+                <input type="time"
+                       id="checkIn"
+                       name="checkIn">
             </div>
 
             <div>
                 <label for="checkOut">Check-Out Time</label>
-                <input type="time" id="checkOut" name="checkOut">
+
+                <input type="time"
+                       id="checkOut"
+                       name="checkOut">
             </div>
 
             <div>
                 <label for="remarks">Remarks</label>
+
                 <input type="text"
                        id="remarks"
                        name="remarks"
@@ -255,3 +269,4 @@
 
 </body>
 </html>
+
