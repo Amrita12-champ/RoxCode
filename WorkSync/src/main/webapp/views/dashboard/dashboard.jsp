@@ -52,7 +52,7 @@
             </a>
 
             <a class="nav-link"
-               href="<%= request.getContextPath() %>/leaves">
+               href="<%= request.getContextPath() %>/leave-management">
                 <span class="nav-icon">▧</span>
                 Leave Management
             </a>
