@@ -62,6 +62,8 @@
 
     <link rel="stylesheet"
           href="<%= request.getContextPath() %>/css/employee-dashboard.css">
+
+
 </head>
 
 <body>
@@ -95,10 +97,9 @@
                 <span>My Attendance</span>
             </a>
 
-            <a href="#leave" class="nav-link">
-                <span class="nav-icon">▤</span>
-                <span>Leave Management</span>
-            </a>
+            <a href="<%= request.getContextPath() %>/apply-leave"
+               class="nav-link"> <span class="nav-icon">▤</span>
+                <span>Leave Management</span> </a>
 
         </nav>
 
@@ -245,13 +246,22 @@
 
                 <section id="leave" class="content-card service-card">
                     <div class="service-icon leave-service-icon">▤</div>
+
                     <h3>Leave Management</h3>
+
                     <p>
-                        Apply for leave and track your leave requests
-                        and approval status.
+                        Apply for leave, view your submitted applications,
+                        and track approval status.
                     </p>
-                    <span class="coming-soon">Leave module coming soon</span>
+
+                    <a href="<%= request.getContextPath() %>/apply-leave"
+                       class="leave-action-link">
+                        Apply for Leave <span>→</span>
+                    </a>
+
+
                 </section>
+
 
             </div>
 
