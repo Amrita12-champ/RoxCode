@@ -12,6 +12,9 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.List;
 
 @WebServlet(
         name = "LeaveApplicationServlet",
@@ -28,13 +31,16 @@ public class LeaveApplicationServlet extends HttpServlet {
         System.out.println(
                 "LeaveApplicationServlet initialized successfully!"
         );
-
-        System.out.println(
-                "Mapped URL: /apply-leave"
-        );
+        System.out.println("Mapped URL: /apply-leave");
     }
 
-    // Open the leave application page
+    private boolean isEmployee(HttpSession session) {
+        return session != null
+                && session.getAttribute("userId") != null
+                && "EMPLOYEE".equals(session.getAttribute("role"));
+    }
+
+    // Display the employee's leave application page
     @Override
     protected void doGet(
             HttpServletRequest request,
@@ -43,7 +49,6 @@ public class LeaveApplicationServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        // Check whether the user is logged in
         if (session == null || session.getAttribute("userId") == null) {
             response.sendRedirect(
                     request.getContextPath() + "/login"
@@ -51,138 +56,212 @@ public class LeaveApplicationServlet extends HttpServlet {
             return;
         }
 
-        // Correct JSP path: views/employees/
-        String jspPath =
-                "/views/employees/leave-application.jsp";
-
-        // Verify that the JSP exists
-        if (getServletContext().getResource(jspPath) == null) {
-            throw new ServletException(
-                    "Leave application JSP not found: " + jspPath
-            );
-        }
-
-        // Forward to the leave application page
-        request.getRequestDispatcher(jspPath)
-                .forward(request, response);
-    }
-
-    // Process leave application form submission
-    @Override
-    protected void doPost(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
-
-        HttpSession session = request.getSession(false);
-
-        // Check whether the user is logged in
-        if (session == null || session.getAttribute("userId") == null) {
-            response.sendRedirect(
-                    request.getContextPath() + "/login"
+        if (!isEmployee(session)) {
+            response.sendError(
+                    HttpServletResponse.SC_FORBIDDEN,
+                    "Only employees can access this page."
             );
             return;
         }
-
-        request.setCharacterEncoding("UTF-8");
 
         try {
             int userId = Integer.parseInt(
                     session.getAttribute("userId").toString()
             );
 
+            int employeeId =
+                    leaveApplicationDAO.findEmployeeIdByUserId(userId);
+
+            if (employeeId == -1) {
+                response.sendError(
+                        HttpServletResponse.SC_FORBIDDEN,
+                        "Your account is not linked to an employee record."
+                );
+                return;
+            }
+
+            List<LeaveRequest> leaveRequests =
+                    leaveApplicationDAO.getMyLeaveRequests(employeeId);
+
+            request.setAttribute("leaveRequests", leaveRequests);
+
+            request.getRequestDispatcher(
+                    "/views/employees/leave-application.jsp"
+            ).forward(request, response);
+
+        } catch (SQLException e) {
+            throw new ServletException(
+                    "Unable to load leave applications.", e
+            );
+        }
+    }
+
+    // Save a new leave application
+    @Override
+    protected void doPost(
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws ServletException, IOException {
+
+        System.out.println("========== APPLY LEAVE POST ==========");
+
+        request.setCharacterEncoding("UTF-8");
+
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("userId") == null) {
+            response.sendRedirect(
+                    request.getContextPath() + "/login"
+            );
+            return;
+        }
+
+        if (!isEmployee(session)) {
+            response.sendError(
+                    HttpServletResponse.SC_FORBIDDEN,
+                    "Only employees can submit leave applications."
+            );
+            return;
+        }
+
+        try {
+            int userId = Integer.parseInt(
+                    session.getAttribute("userId").toString()
+            );
+
+            int employeeId =
+                    leaveApplicationDAO.findEmployeeIdByUserId(userId);
+
+            if (employeeId == -1) {
+                response.sendError(
+                        HttpServletResponse.SC_FORBIDDEN,
+                        "Your account is not linked to an employee record."
+                );
+                return;
+            }
+
             String leaveType = request.getParameter("leaveType");
-            String startDate = request.getParameter("startDate");
-            String endDate = request.getParameter("endDate");
+            String startDateValue = request.getParameter("startDate");
+            String endDateValue = request.getParameter("endDate");
             String reason = request.getParameter("reason");
 
-            // Validate required fields
-            if (leaveType == null || leaveType.isEmpty()
-                    || startDate == null || startDate.isEmpty()
-                    || endDate == null || endDate.isEmpty()
-                    || reason == null || reason.isEmpty()) {
+            System.out.println("User ID: " + userId);
+            System.out.println("Employee ID: " + employeeId);
+            System.out.println("Leave Type: " + leaveType);
+            System.out.println("Start Date: " + startDateValue);
+            System.out.println("End Date: " + endDateValue);
 
-                request.setAttribute(
-                        "errorMessage",
-                        "Please fill in all required fields."
+            // Validate leave type
+            if (leaveType == null
+                    || !(leaveType.equals("CASUAL")
+                    || leaveType.equals("SICK")
+                    || leaveType.equals("EARNED")
+                    || leaveType.equals("UNPAID"))) {
+
+                session.setAttribute(
+                        "leaveMessage",
+                        "Please select a valid leave type."
                 );
 
-                request.getRequestDispatcher(
-                        "/views/employees/leave-application.jsp"
-                ).forward(request, response);
-
+                response.sendRedirect(
+                        request.getContextPath() + "/apply-leave"
+                );
                 return;
             }
 
-            // Convert date strings
-            Date fromDate = Date.valueOf(startDate);
-            Date toDate = Date.valueOf(endDate);
+            // Validate dates
+            if (startDateValue == null
+                    || startDateValue.isEmpty()
+                    || endDateValue == null
+                    || endDateValue.isEmpty()) {
 
-            // Validate date range
-            if (toDate.before(fromDate)) {
-                request.setAttribute(
-                        "errorMessage",
-                        "End date cannot be before the start date."
+                session.setAttribute(
+                        "leaveMessage",
+                        "Please select both leave dates."
                 );
 
-                request.getRequestDispatcher(
-                        "/views/employees/leave-application.jsp"
-                ).forward(request, response);
-
+                response.sendRedirect(
+                        request.getContextPath() + "/apply-leave"
+                );
                 return;
             }
 
-            /*
-             * SUBMISSION SECTION
-             *
-             * Connect this section to your existing LeaveRequest
-             * constructor and LeaveApplicationDAO submission method.
-             *
-             * I have not guessed those method signatures because
-             * they must match your existing project.
-             */
+            LocalDate start = LocalDate.parse(startDateValue);
+            LocalDate end = LocalDate.parse(endDateValue);
 
-            request.setAttribute(
-                    "leaveType", leaveType
+            if (start.isBefore(LocalDate.now())) {
+                session.setAttribute(
+                        "leaveMessage",
+                        "Leave start date cannot be in the past."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath() + "/apply-leave"
+                );
+                return;
+            }
+
+            if (end.isBefore(start)) {
+                session.setAttribute(
+                        "leaveMessage",
+                        "End date cannot be earlier than start date."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath() + "/apply-leave"
+                );
+                return;
+            }
+
+            if (reason != null && reason.trim().length() > 500) {
+                session.setAttribute(
+                        "leaveMessage",
+                        "Reason cannot exceed 500 characters."
+                );
+
+                response.sendRedirect(
+                        request.getContextPath() + "/apply-leave"
+                );
+                return;
+            }
+
+            // ACTUAL DATABASE INSERT
+            boolean saved = leaveApplicationDAO.applyForLeave(
+                    employeeId,
+                    leaveType,
+                    Date.valueOf(start),
+                    Date.valueOf(end),
+                    reason == null || reason.trim().isEmpty()
+                            ? null
+                            : reason.trim()
             );
 
-            request.setAttribute(
-                    "startDate", startDate
+            System.out.println("Leave saved to database: " + saved);
+
+            session.setAttribute(
+                    "leaveMessage",
+                    saved
+                            ? "Leave application submitted successfully!"
+                            : "Unable to submit your leave application."
             );
 
-            request.setAttribute(
-                    "endDate", endDate
+            response.sendRedirect(
+                    request.getContextPath() + "/apply-leave"
             );
-
-            request.setAttribute(
-                    "reason", reason
-            );
-
-            request.setAttribute(
-                    "errorMessage",
-                    "Form validation passed, but the database submission method must be connected."
-            );
-
-            request.getRequestDispatcher(
-                    "/views/employees/leave-application.jsp"
-            ).forward(request, response);
 
         } catch (IllegalArgumentException e) {
-
-            request.setAttribute(
-                    "errorMessage",
-                    "Invalid date or form data. Please check your entries."
+            session.setAttribute(
+                    "leaveMessage",
+                    "Invalid form data or date. Please check your entries."
             );
 
-            request.getRequestDispatcher(
-                    "/views/employees/leave-application.jsp"
-            ).forward(request, response);
+            response.sendRedirect(
+                    request.getContextPath() + "/apply-leave"
+            );
 
-        } catch (Exception e) {
-
+        } catch (SQLException e) {
             throw new ServletException(
-                    "Error processing leave application.",
-                    e
+                    "Database error while submitting leave application.", e
             );
         }
     }
