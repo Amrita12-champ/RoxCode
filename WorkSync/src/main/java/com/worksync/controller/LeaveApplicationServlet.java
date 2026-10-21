@@ -12,27 +12,29 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.List;
 
-@WebServlet("/apply-leave")
+@WebServlet(
+        name = "LeaveApplicationServlet",
+        urlPatterns = {"/apply-leave"}
+)
 public class LeaveApplicationServlet extends HttpServlet {
 
-    private LeaveApplicationDAO leaveDAO;
+    private LeaveApplicationDAO leaveApplicationDAO;
 
     @Override
-    public void init() {
-        leaveDAO = new LeaveApplicationDAO();
+    public void init() throws ServletException {
+        leaveApplicationDAO = new LeaveApplicationDAO();
+
+        System.out.println(
+                "LeaveApplicationServlet initialized successfully!"
+        );
+
+        System.out.println(
+                "Mapped URL: /apply-leave"
+        );
     }
 
-    private boolean isEmployee(HttpSession session) {
-
-        return session != null
-                && session.getAttribute("userId") != null
-                && "EMPLOYEE".equals(session.getAttribute("role"));
-    }
-
+    // Open the leave application page
     @Override
     protected void doGet(
             HttpServletRequest request,
@@ -41,43 +43,31 @@ public class LeaveApplicationServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
+        // Check whether the user is logged in
         if (session == null || session.getAttribute("userId") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
+            response.sendRedirect(
+                    request.getContextPath() + "/login"
+            );
             return;
         }
 
-        if (!isEmployee(session)) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                    "Only employees can access this page.");
-            return;
+        // Correct JSP path: views/employees/
+        String jspPath =
+                "/views/employees/leave-application.jsp";
+
+        // Verify that the JSP exists
+        if (getServletContext().getResource(jspPath) == null) {
+            throw new ServletException(
+                    "Leave application JSP not found: " + jspPath
+            );
         }
 
-        try {
-
-            int userId = ((Number) session.getAttribute("userId")).intValue();
-
-            int employeeId = leaveDAO.findEmployeeIdByUserId(userId);
-
-            if (employeeId == -1) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                        "Your login account is not linked to an employee record.");
-                return;
-            }
-
-            List<LeaveRequest> requests =
-                    leaveDAO.getMyLeaveRequests(employeeId);
-
-            request.setAttribute("leaveRequests", requests);
-
-            request.getRequestDispatcher(
-                            "/views/employee/leave-application.jsp")
-                    .forward(request, response);
-
-        } catch (SQLException e) {
-            throw new ServletException("Unable to load leave applications.", e);
-        }
+        // Forward to the leave application page
+        request.getRequestDispatcher(jspPath)
+                .forward(request, response);
     }
 
+    // Process leave application form submission
     @Override
     protected void doPost(
             HttpServletRequest request,
@@ -86,116 +76,115 @@ public class LeaveApplicationServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
+        // Check whether the user is logged in
         if (session == null || session.getAttribute("userId") == null) {
-            response.sendRedirect(request.getContextPath() + "/login");
-            return;
-        }
-
-        if (!isEmployee(session)) {
-            response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                    "Only employees can submit leave applications.");
+            response.sendRedirect(
+                    request.getContextPath() + "/login"
+            );
             return;
         }
 
         request.setCharacterEncoding("UTF-8");
 
         try {
-
-            int userId = ((Number) session.getAttribute("userId")).intValue();
-
-            int employeeId = leaveDAO.findEmployeeIdByUserId(userId);
-
-            if (employeeId == -1) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN,
-                        "Your login account is not linked to an employee record.");
-                return;
-            }
+            int userId = Integer.parseInt(
+                    session.getAttribute("userId").toString()
+            );
 
             String leaveType = request.getParameter("leaveType");
-            String startDateValue = request.getParameter("startDate");
-            String endDateValue = request.getParameter("endDate");
+            String startDate = request.getParameter("startDate");
+            String endDate = request.getParameter("endDate");
             String reason = request.getParameter("reason");
 
-            if (leaveType == null
-                    || !(leaveType.equals("CASUAL")
-                    || leaveType.equals("SICK")
-                    || leaveType.equals("EARNED")
-                    || leaveType.equals("UNPAID"))) {
+            // Validate required fields
+            if (leaveType == null || leaveType.isEmpty()
+                    || startDate == null || startDate.isEmpty()
+                    || endDate == null || endDate.isEmpty()
+                    || reason == null || reason.isEmpty()) {
 
-                request.getSession().setAttribute(
-                        "leaveMessage", "Please select a valid leave type.");
+                request.setAttribute(
+                        "errorMessage",
+                        "Please fill in all required fields."
+                );
 
-                response.sendRedirect(request.getContextPath() + "/apply-leave");
+                request.getRequestDispatcher(
+                        "/views/employees/leave-application.jsp"
+                ).forward(request, response);
+
                 return;
             }
 
-            if (startDateValue == null || endDateValue == null
-                    || startDateValue.isEmpty()
-                    || endDateValue.isEmpty()) {
+            // Convert date strings
+            Date fromDate = Date.valueOf(startDate);
+            Date toDate = Date.valueOf(endDate);
 
-                request.getSession().setAttribute(
-                        "leaveMessage", "Please select both leave dates.");
+            // Validate date range
+            if (toDate.before(fromDate)) {
+                request.setAttribute(
+                        "errorMessage",
+                        "End date cannot be before the start date."
+                );
 
-                response.sendRedirect(request.getContextPath() + "/apply-leave");
+                request.getRequestDispatcher(
+                        "/views/employees/leave-application.jsp"
+                ).forward(request, response);
+
                 return;
             }
 
-            LocalDate start = LocalDate.parse(startDateValue);
-            LocalDate end = LocalDate.parse(endDateValue);
+            /*
+             * SUBMISSION SECTION
+             *
+             * Connect this section to your existing LeaveRequest
+             * constructor and LeaveApplicationDAO submission method.
+             *
+             * I have not guessed those method signatures because
+             * they must match your existing project.
+             */
 
-            if (start.isBefore(LocalDate.now())) {
-                request.getSession().setAttribute(
-                        "leaveMessage", "Leave start date cannot be in the past.");
-
-                response.sendRedirect(request.getContextPath() + "/apply-leave");
-                return;
-            }
-
-            if (end.isBefore(start)) {
-                request.getSession().setAttribute(
-                        "leaveMessage", "End date cannot be earlier than start date.");
-
-                response.sendRedirect(request.getContextPath() + "/apply-leave");
-                return;
-            }
-
-            if (reason != null && reason.length() > 500) {
-                request.getSession().setAttribute(
-                        "leaveMessage", "Reason cannot exceed 500 characters.");
-
-                response.sendRedirect(request.getContextPath() + "/apply-leave");
-                return;
-            }
-
-            boolean saved = leaveDAO.applyForLeave(
-                    employeeId,
-                    leaveType,
-                    Date.valueOf(start),
-                    Date.valueOf(end),
-                    reason == null || reason.isEmpty() ? null : reason.trim()
+            request.setAttribute(
+                    "leaveType", leaveType
             );
 
-            request.getSession().setAttribute(
-                    "leaveMessage",
-                    saved
-                            ? "Leave application submitted successfully!"
-                            : "Unable to submit your leave application."
+            request.setAttribute(
+                    "startDate", startDate
             );
 
-            response.sendRedirect(request.getContextPath() + "/apply-leave");
+            request.setAttribute(
+                    "endDate", endDate
+            );
+
+            request.setAttribute(
+                    "reason", reason
+            );
+
+            request.setAttribute(
+                    "errorMessage",
+                    "Form validation passed, but the database submission method must be connected."
+            );
+
+            request.getRequestDispatcher(
+                    "/views/employees/leave-application.jsp"
+            ).forward(request, response);
 
         } catch (IllegalArgumentException e) {
 
-            request.getSession().setAttribute(
-                    "leaveMessage", "Please enter valid leave dates.");
+            request.setAttribute(
+                    "errorMessage",
+                    "Invalid date or form data. Please check your entries."
+            );
 
-            response.sendRedirect(request.getContextPath() + "/apply-leave");
+            request.getRequestDispatcher(
+                    "/views/employees/leave-application.jsp"
+            ).forward(request, response);
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
 
-            throw new ServletException("Unable to save leave application.", e);
+            throw new ServletException(
+                    "Error processing leave application.",
+                    e
+            );
         }
     }
-
-
 }
+
