@@ -6,7 +6,7 @@
 
 <hibernate-configuration>
     <session-factory>
-
+        <!-- Database connection -->
         <property name="hibernate.connection.driver_class">
             com.mysql.cj.jdbc.Driver
         </property>
@@ -16,16 +16,23 @@
         </property>
 
         <property name="hibernate.connection.username">root</property>
-
         <property name="hibernate.connection.password">a34862@TKRS</property>
 
+        <!-- Hibernate dialect -->
         <property name="hibernate.dialect">
             org.hibernate.dialect.MySQLDialect
         </property>
 
+        <!-- SQL logging -->
         <property name="hibernate.show_sql">true</property>
-
         <property name="hibernate.format_sql">true</property>
 
+        <!-- Automatically create missing tables and update schema -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Session context -->
+        <property name="hibernate.current_session_context_class">thread</property>
+
     </session-factory>
+
 </hibernate-configuration>
