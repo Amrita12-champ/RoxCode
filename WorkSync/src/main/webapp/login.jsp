@@ -1,6 +1,7 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,6 +10,27 @@
 
     <link rel="stylesheet"
           href="<%= request.getContextPath() %>/css/login.css">
+
+    <style>
+        .forgot-password {
+            margin-top: 16px;
+            text-align: center;
+        }
+
+        .forgot-password a {
+            color: #a78bfa;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s ease;
+        }
+
+        .forgot-password a:hover {
+            color: #c4b5fd;
+            text-decoration: underline;
+        }
+    </style>
+
+
 </head>
 <body>
 
@@ -26,6 +48,12 @@
         <% if (request.getAttribute("error") != null) { %>
         <div class="error-message">
             <%= request.getAttribute("error") %>
+        </div>
+        <% } %>
+
+        <% if (request.getAttribute("success") != null) { %>
+        <div style="color: #4ade80; text-align: center; margin-bottom: 15px;">
+            <%= request.getAttribute("success") %>
         </div>
         <% } %>
 
@@ -56,12 +84,18 @@
             <button type="submit">Sign In</button>
 
         </form>
+
+        <div class="forgot-password">
+            <a href="<%= request.getContextPath() %>/reset-password">
+                Forgot Password?
+            </a>
+        </div>
     </div>
 
     <p class="footer-text">Secure access to your workplace</p>
+
 
 </div>
 
 </body>
 </html>
-
