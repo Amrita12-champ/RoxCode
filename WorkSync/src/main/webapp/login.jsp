@@ -51,9 +51,9 @@
         </div>
         <% } %>
 
-        <% if (request.getAttribute("success") != null) { %>
+        <% if ("success".equals(request.getParameter("passwordReset"))) { %>
         <div style="color: #4ade80; text-align: center; margin-bottom: 15px;">
-            <%= request.getAttribute("success") %>
+            Password updated successfully. Please log in with your new password.
         </div>
         <% } %>
 
