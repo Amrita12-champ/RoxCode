@@ -175,7 +175,7 @@
                 </div>
 
                 <p class="stat-label">Departments</p>
-                <h3>--</h3>
+                <h3>${totalDepartments}</h3>
                 <p class="stat-description">Organizational departments</p>
             </article>
 
