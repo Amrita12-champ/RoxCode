@@ -153,7 +153,7 @@
                 </div>
 
                 <p class="stat-label">Present Today</p>
-                <h3>--</h3>
+                <h3>${presentToday}</h3>
                 <p class="stat-description">Attendance summary</p>
             </article>
 
@@ -164,7 +164,7 @@
                 </div>
 
                 <p class="stat-label">Pending Leave Requests</p>
-                <h3>--</h3>
+                <h3>${pendingLeaveRequests}</h3>
                 <p class="stat-description">Awaiting manager review</p>
             </article>
 
