@@ -142,7 +142,7 @@
                 </div>
 
                 <p class="stat-label">Total Employees</p>
-                <h3>--</h3>
+                <h3>${totalEmployees}</h3>
                 <p class="stat-description">Registered workforce members</p>
             </article>
 
