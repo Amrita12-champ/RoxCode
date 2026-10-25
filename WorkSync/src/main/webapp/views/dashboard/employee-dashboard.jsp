@@ -1,6 +1,4 @@
-
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.util.Objects" %>
 
 <%!
     private String escapeHtml(Object value) {
@@ -15,6 +13,14 @@
                 .replace("\"", "&quot;")
                 .replace("'", "&#39;");
     }
+
+    private String displayValue(Object value) {
+        if (value == null || value.toString().trim().isEmpty()) {
+            return "Not provided";
+        }
+
+        return escapeHtml(value);
+    }
 %>
 
 <%
@@ -25,14 +31,18 @@
 
     String firstName = escapeHtml(request.getAttribute("firstName"));
     String lastName = escapeHtml(request.getAttribute("lastName"));
-    String email = escapeHtml(request.getAttribute("email"));
-    String phone = escapeHtml(request.getAttribute("phone"));
-    String jobTitle = escapeHtml(request.getAttribute("jobTitle"));
-    String departmentName = escapeHtml(request.getAttribute("departmentName"));
-    String employmentStatus = escapeHtml(request.getAttribute("employmentStatus"));
-    String joiningDate = escapeHtml(request.getAttribute("joiningDate"));
+    String email = displayValue(request.getAttribute("email"));
+    String phone = displayValue(request.getAttribute("phone"));
+    String jobTitle = displayValue(request.getAttribute("jobTitle"));
+    String departmentName = displayValue(request.getAttribute("departmentName"));
+    String employmentStatus = displayValue(request.getAttribute("employmentStatus"));
+    String joiningDate = displayValue(request.getAttribute("joiningDate"));
 
     String fullName = (firstName + " " + lastName).trim();
+
+    if (fullName.isEmpty()) {
+        fullName = "Employee";
+    }
 
     String initials = "";
 
@@ -47,6 +57,34 @@
     if (initials.isEmpty()) {
         initials = "E";
     }
+
+    int employeeId = request.getAttribute("employeeId") == null
+            ? 0
+            : ((Number) request.getAttribute("employeeId")).intValue();
+
+    int totalAttendanceRecords = request.getAttribute("totalAttendanceRecords") == null
+            ? 0 : ((Number) request.getAttribute("totalAttendanceRecords")).intValue();
+
+    int presentDays = request.getAttribute("presentDays") == null
+            ? 0 : ((Number) request.getAttribute("presentDays")).intValue();
+
+    int absentDays = request.getAttribute("absentDays") == null
+            ? 0 : ((Number) request.getAttribute("absentDays")).intValue();
+
+    int halfDays = request.getAttribute("halfDays") == null
+            ? 0 : ((Number) request.getAttribute("halfDays")).intValue();
+
+    int totalLeaves = request.getAttribute("totalLeaves") == null
+            ? 0 : ((Number) request.getAttribute("totalLeaves")).intValue();
+
+    int pendingLeaves = request.getAttribute("pendingLeaves") == null
+            ? 0 : ((Number) request.getAttribute("pendingLeaves")).intValue();
+
+    int approvedLeaves = request.getAttribute("approvedLeaves") == null
+            ? 0 : ((Number) request.getAttribute("approvedLeaves")).intValue();
+
+    int rejectedLeaves = request.getAttribute("rejectedLeaves") == null
+            ? 0 : ((Number) request.getAttribute("rejectedLeaves")).intValue();
 %>
 
 <!DOCTYPE html>
@@ -62,8 +100,6 @@
 
     <link rel="stylesheet"
           href="<%= request.getContextPath() %>/css/employee-dashboard.css">
-
-
 </head>
 
 <body>
@@ -97,9 +133,16 @@
                 <span>My Attendance</span>
             </a>
 
+            <a href="#leave-summary" class="nav-link">
+                <span class="nav-icon">▤</span>
+                <span>Leave Summary</span>
+            </a>
+
             <a href="<%= request.getContextPath() %>/apply-leave"
-               class="nav-link"> <span class="nav-icon">▤</span>
-                <span>Leave Management</span> </a>
+               class="nav-link">
+                <span class="nav-icon">＋</span>
+                <span>Apply for Leave</span>
+            </a>
 
         </nav>
 
@@ -118,6 +161,7 @@
         <header class="topbar">
 
             <div class="page-heading">
+
                 <div class="breadcrumb">
                     WorkSync <span>/</span> Employee Workspace
                 </div>
@@ -127,6 +171,7 @@
                 <p class="page-subtitle">
                     Your work information, all in one place.
                 </p>
+
             </div>
 
             <div class="user-info">
@@ -146,13 +191,18 @@
 
         <section class="employee-content">
 
+            <!-- Welcome section -->
+
             <div class="employee-welcome">
 
                 <div>
-                    <span class="welcome-label">EMPLOYEE WORKSPACE</span>
+                    <span class="welcome-label">
+                        EMPLOYEE WORKSPACE
+                    </span>
 
                     <h2>
-                        Welcome back, <%= firstName %>!
+                        Welcome back, <%= firstName.isEmpty()
+                            ? "Employee" : firstName %>!
                     </h2>
 
                     <p>
@@ -164,9 +214,116 @@
 
             </div>
 
+            <!-- Attendance summary -->
+
+            <div id="attendance" class="employee-section-heading">
+
+                <h3>Attendance Overview</h3>
+
+                <p>
+                    Your attendance records for the current month.
+                </p>
+
+            </div>
+
+            <div class="employee-service-grid statistics-grid">
+
+                <section class="content-card statistic-card">
+                    <div class="service-icon attendance-icon">◷</div>
+                    <span class="statistic-label">Present Days</span>
+                    <strong class="statistic-number">
+                        <%= presentDays %>
+                    </strong>
+                    <span class="statistic-note">Current month</span>
+                </section>
+
+                <section class="content-card statistic-card">
+                    <div class="service-icon absent-icon">×</div>
+                    <span class="statistic-label">Absent Days</span>
+                    <strong class="statistic-number">
+                        <%= absentDays %>
+                    </strong>
+                    <span class="statistic-note">Current month</span>
+                </section>
+
+                <section class="content-card statistic-card">
+                    <div class="service-icon halfday-icon">◐</div>
+                    <span class="statistic-label">Half Days</span>
+                    <strong class="statistic-number">
+                        <%= halfDays %>
+                    </strong>
+                    <span class="statistic-note">Current month</span>
+                </section>
+
+                <section class="content-card statistic-card">
+                    <div class="service-icon leave-service-icon">▤</div>
+                    <span class="statistic-label">Total Records</span>
+                    <strong class="statistic-number">
+                        <%= totalAttendanceRecords %>
+                    </strong>
+                    <span class="statistic-note">Current month</span>
+                </section>
+
+            </div>
+
+            <!-- Leave summary -->
+
+            <div id="leave-summary" class="employee-section-heading">
+
+                <h3>Leave Overview</h3>
+
+                <p>
+                    Track the status of your leave applications.
+                </p>
+
+            </div>
+
+            <div class="employee-service-grid statistics-grid">
+
+                <section class="content-card statistic-card">
+                    <div class="service-icon pending-icon">◷</div>
+                    <span class="statistic-label">Pending Requests</span>
+                    <strong class="statistic-number">
+                        <%= pendingLeaves %>
+                    </strong>
+                    <span class="statistic-note">Awaiting review</span>
+                </section>
+
+                <section class="content-card statistic-card">
+                    <div class="service-icon approved-icon">✓</div>
+                    <span class="statistic-label">Approved Requests</span>
+                    <strong class="statistic-number">
+                        <%= approvedLeaves %>
+                    </strong>
+                    <span class="statistic-note">Approved applications</span>
+                </section>
+
+                <section class="content-card statistic-card">
+                    <div class="service-icon rejected-icon">×</div>
+                    <span class="statistic-label">Rejected Requests</span>
+                    <strong class="statistic-number">
+                        <%= rejectedLeaves %>
+                    </strong>
+                    <span class="statistic-note">Rejected applications</span>
+                </section>
+
+                <section class="content-card statistic-card">
+                    <div class="service-icon leave-service-icon">▤</div>
+                    <span class="statistic-label">Total Applications</span>
+                    <strong class="statistic-number">
+                        <%= totalLeaves %>
+                    </strong>
+                    <span class="statistic-note">All leave requests</span>
+                </section>
+
+            </div>
+
+            <!-- Employee profile -->
+
             <section id="profile" class="content-card profile-card">
 
                 <div class="card-heading">
+
                     <div>
                         <h3>My Profile</h3>
                         <p>Your personal and employment information.</p>
@@ -175,6 +332,7 @@
                     <span class="employee-status">
                         <%= employmentStatus %>
                     </span>
+
                 </div>
 
                 <div class="profile-grid">
@@ -186,7 +344,7 @@
 
                     <div class="profile-item">
                         <span>Employee ID</span>
-                        <strong><%= request.getAttribute("employeeId") %></strong>
+                        <strong><%= employeeId %></strong>
                     </div>
 
                     <div class="profile-item">
@@ -196,7 +354,7 @@
 
                     <div class="profile-item">
                         <span>Phone Number</span>
-                        <strong><%= phone.isEmpty() ? "Not provided" : phone %></strong>
+                        <strong><%= phone %></strong>
                     </div>
 
                     <div class="profile-item">
@@ -206,11 +364,7 @@
 
                     <div class="profile-item">
                         <span>Department</span>
-                        <strong>
-                            <%= departmentName.isEmpty()
-                                    ? "Not assigned"
-                                    : departmentName %>
-                        </strong>
+                        <strong><%= departmentName %></strong>
                     </div>
 
                     <div class="profile-item">
@@ -227,31 +381,46 @@
 
             </section>
 
+            <!-- Quick actions -->
+
             <div class="employee-section-heading">
-                <h3>My Workspace</h3>
-                <p>Quick access to your employee services.</p>
+
+                <h3>Quick Actions</h3>
+
+                <p>
+                    Access your employee services.
+                </p>
+
             </div>
 
             <div class="employee-service-grid">
 
-                <section id="attendance" class="content-card service-card">
+                <section class="content-card service-card">
+
                     <div class="service-icon attendance-icon">◷</div>
+
                     <h3>My Attendance</h3>
+
                     <p>
-                        Your attendance summary and daily attendance records
-                        will appear here.
+                        Review your current month's attendance statistics
+                        above.
                     </p>
-                    <span class="coming-soon">Attendance module coming next</span>
+
+                    <a href="#attendance" class="leave-action-link">
+                        View Attendance Summary <span>→</span>
+                    </a>
+
                 </section>
 
-                <section id="leave" class="content-card service-card">
+                <section class="content-card service-card">
+
                     <div class="service-icon leave-service-icon">▤</div>
 
                     <h3>Leave Management</h3>
 
                     <p>
-                        Apply for leave, view your submitted applications,
-                        and track approval status.
+                        Submit a leave application and check your request
+                        statistics.
                     </p>
 
                     <a href="<%= request.getContextPath() %>/apply-leave"
@@ -259,9 +428,7 @@
                         Apply for Leave <span>→</span>
                     </a>
 
-
                 </section>
-
 
             </div>
 
@@ -278,4 +445,3 @@
 
 </body>
 </html>
-
