@@ -54,6 +54,13 @@
                 <span class="nav-icon">▧</span>
                 Leave Management
             </a>
+
+            <a class="nav-link"
+               href="<%= request.getContextPath() %>/reports">
+                <span class="nav-icon">▥</span>
+                Reports & Analytics
+            </a>
+
         </nav>
 
         <div class="sidebar-bottom">
