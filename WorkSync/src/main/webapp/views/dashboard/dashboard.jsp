@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +9,6 @@
     <title>WorkSync | Dashboard</title>
     <link rel="stylesheet"
           href="<%= request.getContextPath() %>/css/dashboard.css">
-
 
 </head>
 <body>
@@ -52,7 +50,7 @@
             </a>
 
             <a class="nav-link"
-               href="<%= request.getContextPath() %>/leaves">
+               href="<%= request.getContextPath() %>/leave-management">
                 <span class="nav-icon">▧</span>
                 Leave Management
             </a>
@@ -142,7 +140,7 @@
                 </div>
 
                 <p class="stat-label">Total Employees</p>
-                <h3>--</h3>
+                <h3>${totalEmployees}</h3>
                 <p class="stat-description">Registered workforce members</p>
             </article>
 
@@ -153,7 +151,7 @@
                 </div>
 
                 <p class="stat-label">Present Today</p>
-                <h3>--</h3>
+                <h3>${presentToday}</h3>
                 <p class="stat-description">Attendance summary</p>
             </article>
 
@@ -164,7 +162,7 @@
                 </div>
 
                 <p class="stat-label">Pending Leave Requests</p>
-                <h3>--</h3>
+                <h3>${pendingLeaveRequests}</h3>
                 <p class="stat-description">Awaiting manager review</p>
             </article>
 
@@ -175,7 +173,7 @@
                 </div>
 
                 <p class="stat-label">Departments</p>
-                <h3>--</h3>
+                <h3>${totalDepartments}</h3>
                 <p class="stat-description">Organizational departments</p>
             </article>
 

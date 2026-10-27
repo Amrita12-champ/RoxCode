@@ -1,0 +1,302 @@
+.employee-leave-main {
+    min-height: 100vh;
+    margin-left: 250px;
+    padding: 0 35px 25px;
+    background: var(--bg, #0d0d14);
+}
+
+.employee-leave-heading {
+    padding: 34px 0 27px;
+}
+
+.employee-leave-heading h1 {
+    margin: 0;
+    color: var(--text, #f4f3fb);
+    font-size: 30px;
+    letter-spacing: -1px;
+}
+
+.employee-leave-heading p {
+    margin: 10px 0 0;
+    color: var(--muted, #9695ad);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.application-panel,
+.my-requests-panel {
+    overflow: hidden;
+    margin-bottom: 24px;
+    background: var(--surface, #161621);
+    border: 1px solid var(--border, #29293a);
+    border-radius: 14px;
+}
+
+.application-panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 22px 24px;
+    border-bottom: 1px solid var(--border, #29293a);
+}
+
+.application-panel-heading h2 {
+    margin: 0;
+    color: var(--text, #f4f3fb);
+    font-size: 17px;
+    letter-spacing: -0.4px;
+}
+
+.application-panel-heading p {
+    margin: 7px 0 0;
+    color: var(--muted, #9695ad);
+    font-size: 12px;
+}
+
+.application-icon {
+    display: grid;
+    place-items: center;
+    width: 37px;
+    height: 37px;
+    border: 1px solid rgba(167, 139, 250, 0.2);
+    border-radius: 10px;
+    background: rgba(167, 139, 250, 0.12);
+    color: #a78bfa;
+    font-size: 23px;
+}
+
+.leave-application-form {
+    padding: 24px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 23px 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.form-group label {
+    color: #d9d7e9;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.form-group label span {
+    color: #fb7185;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 13px;
+    outline: none;
+    border: 1px solid #303044;
+    border-radius: 8px;
+    background: #101019;
+    color: #f4f3fb;
+    font-family: inherit;
+    font-size: 12px;
+    transition: border-color 0.2s ease;
+}
+
+.form-group input,
+.form-group select {
+    min-height: 43px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #8b5cf6;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #77768f;
+}
+
+.form-group select option {
+    background: #161621;
+    color: #f4f3fb;
+}
+
+.form-group input[type="date"] {
+    color-scheme: dark;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 105px;
+    line-height: 1.6;
+}
+
+.field-hint {
+    align-self: flex-end;
+    color: #77768f;
+    font-size: 10px;
+}
+
+.form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 26px;
+    padding-top: 20px;
+    border-top: 1px solid #29293a;
+}
+
+.form-footer > span {
+    color: #9695ad;
+    font-size: 11px;
+}
+
+.submit-leave-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 42px;
+    padding: 0 17px;
+    border: 1px solid #8b5cf6;
+    border-radius: 8px;
+    background: #8b5cf6;
+    color: white;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.submit-leave-btn:hover {
+    background: #7c3aed;
+    transform: translateY(-1px);
+}
+
+.leave-message {
+    margin-bottom: 20px;
+    padding: 13px 16px;
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    border-radius: 9px;
+    background: rgba(167, 139, 250, 0.09);
+    color: #c4b5fd;
+    font-size: 12px;
+}
+
+.my-request-count {
+    padding: 8px 11px;
+    border: 1px solid #29293a;
+    border-radius: 8px;
+    background: #20202e;
+    color: #c4c2d6;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.my-leave-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.my-leave-table {
+    width: 100%;
+    min-width: 700px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.my-leave-table th {
+    padding: 15px 17px;
+    background: #14141e;
+    color: #9291aa;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.65px;
+    white-space: nowrap;
+}
+
+.my-leave-table td {
+    padding: 15px 17px;
+    border-top: 1px solid #252535;
+    color: #d4d2e2;
+    font-size: 11px;
+    vertical-align: middle;
+}
+
+.my-leave-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.018);
+}
+
+.my-reason {
+    max-width: 200px;
+    overflow-wrap: anywhere;
+}
+
+.my-leave-empty {
+    height: 100px;
+    text-align: center;
+    color: #9695ad !important;
+}
+
+@media (max-width: 1200px) {
+    .employee-leave-main {
+        padding-right: 24px;
+        padding-left: 24px;
+    }
+}
+
+@media (max-width: 850px) {
+    .employee-leave-main {
+        margin-left: 205px;
+        padding-right: 18px;
+        padding-left: 18px;
+    }
+}
+
+@media (max-width: 600px) {
+    .employee-leave-main {
+        margin-left: 0;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    .form-grid {
+    grid-template-columns: 1fr;
+}
+
+    .full-width {
+        grid-column: auto;
+    }
+
+    .leave-application-form {
+        padding: 17px;
+    }
+
+    .application-panel-heading {
+        padding: 18px 17px;
+    }
+
+    .form-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .submit-leave-btn {
+        width: 100%;
+    }
+
+
+}

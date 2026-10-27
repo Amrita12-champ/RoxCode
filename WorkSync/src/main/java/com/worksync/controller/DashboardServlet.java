@@ -1,5 +1,6 @@
 package com.worksync.controller;
 
+import com.worksync.service.DashboardService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -8,16 +9,23 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
+
+    private DashboardService dashboardService;
+
+    @Override
+    public void init() throws ServletException {
+        dashboardService = new DashboardService();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response)
             throws ServletException, IOException {
 
-        // Step 1: Check whether the user is logged in
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("userId") == null) {
@@ -25,7 +33,6 @@ public class DashboardServlet extends HttpServlet {
             return;
         }
 
-        // Step 2: Allow only Super Admin
         String role = (String) session.getAttribute("role");
 
         if (!"SUPER_ADMIN".equals(role)) {
@@ -36,11 +43,38 @@ public class DashboardServlet extends HttpServlet {
             return;
         }
 
-        // Step 3: Forward to the Super Admin dashboard
-        System.out.println("WorkSync: Super Admin dashboard accessed.");
+        try {
+            request.setAttribute(
+                    "totalEmployees",
+                    dashboardService.getTotalEmployees()
+            );
 
-        request.getRequestDispatcher(
-                "/views/dashboard/dashboard.jsp"
-        ).forward(request, response);
+            request.setAttribute(
+                    "presentToday",
+                    dashboardService.getPresentToday()
+            );
+
+            request.setAttribute(
+                    "pendingLeaveRequests",
+                    dashboardService.getPendingLeaveRequests()
+            );
+
+            request.setAttribute(
+                    "totalDepartments",
+                    dashboardService.getTotalDepartments()
+            );
+
+            System.out.println("WorkSync: Super Admin dashboard accessed.");
+
+            request.getRequestDispatcher(
+                    "/views/dashboard/dashboard.jsp"
+            ).forward(request, response);
+
+        } catch (SQLException e) {
+            throw new ServletException(
+                    "Unable to retrieve dashboard statistics from the database.",
+                    e
+            );
+        }
     }
 }
