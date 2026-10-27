@@ -2,7 +2,6 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10,7 +9,6 @@
     <title>WorkSync | Dashboard</title>
     <link rel="stylesheet"
           href="<%= request.getContextPath() %>/css/dashboard.css">
-
 
 </head>
 <body>
@@ -56,6 +54,13 @@
                 <span class="nav-icon">▧</span>
                 Leave Management
             </a>
+
+            <a class="nav-link"
+               href="<%= request.getContextPath() %>/reports">
+                <span class="nav-icon">▥</span>
+                Reports & Analytics
+            </a>
+
         </nav>
 
         <div class="sidebar-bottom">
