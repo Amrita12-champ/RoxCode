@@ -10,7 +10,7 @@ public class DBConnection {
             "jdbc:mysql://localhost:3306/worksync_db";
 
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "Satya@2005";
+    private static final String PASSWORD = "a34862@TKRS";
 
     public static Connection getConnection() throws SQLException {
 

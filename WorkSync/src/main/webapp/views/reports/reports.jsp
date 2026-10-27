@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <!DOCTYPE html>
@@ -14,6 +14,7 @@
 
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/css/reports.css">
+
 </head>
 
 <body>
@@ -339,15 +340,3 @@
             </div>
 
         </section>
-
-        <footer class="dashboard-footer">
-            <span>© 2026 WorkSync</span>
-            <span>Workforce Management &amp; Operations Platform</span>
-        </footer>
-
-    </main>
-
-</div>
-
-</body>
-</html>
